@@ -6,6 +6,8 @@ import 'package:mpsf_app/common/widgets/blank/mpsf_empty_widget.dart';
 import 'package:mpsf_package_common/mpsf_package_common.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+import '../../common/config/net_config.dart';
+
 class MpsfLoginAuthorizeScreen extends StatefulWidget {
   final String initialUrl;
   MpsfLoginAuthorizeScreen({Key key, this.initialUrl}) : super(key: key);
@@ -17,10 +19,9 @@ class MpsfLoginAuthorizeScreen extends StatefulWidget {
 
 class _MpsfLoginAuthorizeScreenState extends State<MpsfLoginAuthorizeScreen>
     with WidgetsBindingObserver, MpsfCommonFunction {
-  final Completer<WebViewController> _controller =
-      Completer<WebViewController>();
-  static const String client_id = "6525faae-5e7f-4467-83ac-6909a9f27012";
-  static const String redirect_uri = "https://oauth.cnblogs.com/auth/callback";
+  WebViewController _webViewController;
+  static const String client_id = NetConfig.CLIENT_ID;
+  static const String redirect_uri = NetConfig.REDIRECT_URI;
   // ignore: non_constant_identifier_names
   String authorize_url =
       "https://oauth.cnblogs.com/connect/authorize?client_id=$client_id&scope=openid profile CnBlogsApi  offline_access&response_type=code id_token&redirect_uri=$redirect_uri&state=cnblogs.com&nonce=cnblogs.com";
@@ -40,7 +41,7 @@ class _MpsfLoginAuthorizeScreenState extends State<MpsfLoginAuthorizeScreen>
           blankTitle: blankTitle,
           blankDescription: blankDescription,
           onTapBlank: () {
-            onFetchData();
+            _webViewController.reload();
           },
           bodyWidget: _buildBodyWidget(),
         ),
@@ -55,11 +56,12 @@ class _MpsfLoginAuthorizeScreenState extends State<MpsfLoginAuthorizeScreen>
     return Container(
       width: double.infinity,
       height: double.infinity,
+      margin: EdgeInsets.only(top: 2),
       child: WebView(
-        initialUrl: "https://www.baidu.com/",
+        initialUrl: Uri.encodeFull(authorize_url),
         javascriptMode: JavascriptMode.unrestricted,
         onWebViewCreated: (WebViewController webViewController) {
-          _controller.complete(webViewController);
+          _webViewController = webViewController;
         },
         onPageStarted: (String url) {
           print('Page started loading: $url');
@@ -95,6 +97,15 @@ class _MpsfLoginAuthorizeScreenState extends State<MpsfLoginAuthorizeScreen>
   @override
   void onFetchData() {
     // TODO: implement onFetchData
+  }
+
+  @override
+  Future<void> clickBackItem() async {
+    if (await _webViewController.canGoBack()) {
+      await _webViewController.goBack();
+      return;
+    }
+    super.clickBackItem();
   }
 
   @override

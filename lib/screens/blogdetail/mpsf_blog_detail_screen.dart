@@ -14,8 +14,7 @@ class MpsfBlogDetailScreen extends StatefulWidget {
 
 class _MpsfBlogDetailScreenState extends State<MpsfBlogDetailScreen>
     with WidgetsBindingObserver, MpsfCommonFunction {
-  final Completer<WebViewController> _controller =
-      Completer<WebViewController>();
+  WebViewController _webViewController;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,7 +30,7 @@ class _MpsfBlogDetailScreenState extends State<MpsfBlogDetailScreen>
           blankTitle: blankTitle,
           blankDescription: blankDescription,
           onTapBlank: () {
-            onFetchData();
+            _webViewController.reload();
           },
           bodyWidget: _buildBodyWidget(),
         ),
@@ -50,7 +49,7 @@ class _MpsfBlogDetailScreenState extends State<MpsfBlogDetailScreen>
         initialUrl: "https://www.baidu.com/",
         javascriptMode: JavascriptMode.unrestricted,
         onWebViewCreated: (WebViewController webViewController) {
-          _controller.complete(webViewController);
+          _webViewController = webViewController;
         },
         onPageStarted: (String url) {
           print('Page started loading: $url');
@@ -78,6 +77,15 @@ class _MpsfBlogDetailScreenState extends State<MpsfBlogDetailScreen>
   @override
   void onFetchData() {
     // TODO: implement onFetchData
+  }
+
+  @override
+  Future<void> clickBackItem() async {
+    if (await _webViewController.canGoBack()) {
+      await _webViewController.goBack();
+      return;
+    }
+    super.clickBackItem();
   }
 
   @override

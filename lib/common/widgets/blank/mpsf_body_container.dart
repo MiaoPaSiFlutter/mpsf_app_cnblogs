@@ -37,6 +37,7 @@ class _MpsfBodyContainerState extends State<MpsfBodyContainer> {
     return Container(
       width: double.infinity,
       height: double.infinity,
+      color: Colors.white,
       child: Stack(
         children: [
           widget.bodyWidget,

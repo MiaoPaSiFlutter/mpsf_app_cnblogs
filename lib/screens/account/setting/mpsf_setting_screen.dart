@@ -5,6 +5,9 @@ import 'package:mpsf_app/common/widgets/cell/mpsf_cell.dart';
 import 'package:mpsf_app/screens/login/mpsf_login_screen.dart';
 import 'package:group_list_view/group_list_view.dart';
 import 'package:mpsf_package_common/mpsf_package_common.dart';
+import 'package:toast/toast.dart';
+
+import '../../../common/net/network.dart';
 
 class MpsfSettingScreen extends StatefulWidget {
   MpsfSettingScreen({Key key}) : super(key: key);
@@ -121,6 +124,14 @@ class _MpsfSettingScreenState extends State<MpsfSettingScreen>
             if (title == "账号管理") {
               MpsfNavigatorUtils.pushPage(
                   context: context, targetPage: MpsfLoginScreen());
+            } else if (title == "账号与安全") {
+              ApiService.fetchUserInfo().then((value) {
+                if (value.success) {
+                  Toast.show("获取个人信息成功", context);
+                } else {
+                  Toast.show("获取个人信息失败", context);
+                }
+              });
             }
           },
         ),
