@@ -152,7 +152,7 @@ class _MpsfAccountScreenState extends State<MpsfAccountScreen>
   }
 
   void clickSettingItem() {
-    log("---clickSettingItem");
+    mpsf_log("---clickSettingItem");
     MpsfNavigatorUtils.pushPage(
         context: context, targetPage: MpsfSettingScreen());
   }
@@ -202,25 +202,25 @@ class _MpsfAccountScreenState extends State<MpsfAccountScreen>
   @override
   void initState() {
     initBaseCommon(this);
-    log("initState");
+    mpsf_log("initState");
     super.initState();
   }
 
   @override
   void didChangeDependencies() {
-    log("didChangeDependencies");
+    mpsf_log("didChangeDependencies");
     super.didChangeDependencies();
   }
 
   @override
   void deactivate() {
-    log("deactivate");
+    mpsf_log("deactivate");
     super.deactivate();
   }
 
   @override
   void dispose() {
-    log("dispose");
+    mpsf_log("dispose");
     super.dispose();
   }
 }
@@ -241,7 +241,7 @@ class UserInfoItem extends StatelessWidget {
           MpsfNavigatorUtils.pushPage(
               context: context, targetPage: MpsfLoginAuthorizeScreen());
         } else {
-          log("");
+          
         }
       },
       child: this.user == null ? _buildWithNoLogin() : _buildWithAlreadyLogin(),

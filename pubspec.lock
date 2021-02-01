@@ -287,7 +287,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "18b4308117c02c304517d64917d348cac7232ff7"
+      resolved-ref: dc3d7b4da3903dc1b20da4cfb32570967617325c
       url: "git://github.com/MiaoPaSiFlutter/mpsf_package_common.git"
     source: git
     version: "0.0.1"
@@ -570,7 +570,7 @@ packages:
       name: win32
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.7.4"
+    version: "1.7.4+1"
   xdg_directories:
     dependency: transitive
     description:

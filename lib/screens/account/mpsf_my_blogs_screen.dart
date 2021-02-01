@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:mpsf_app/common/net/network.dart';
 import 'package:mpsf_app/common/widgets/blank/mpsf_empty_widget.dart';
@@ -97,25 +99,32 @@ class _MpsfMyBlogsScreenState extends State<MpsfMyBlogsScreen>
 
     if (_blogAppInfo == null) {
       ApiResultData respM =
-          await ApiService.fetchBlogApp(blogApp: widget.blogApp);
+          await ApiService.fetchBlogAppInfos(blogApp: widget.blogApp);
       _blogAppInfo = respM.data;
     }
 
     ApiService.fetchBlogApp(blogApp: widget.blogApp, page: _page).then((respM) {
       _refreshController.refreshCompleted();
-
+      _refreshController.loadComplete();
       if (_page == 1) {
         _items.clear();
       }
-      if (respM.data != null) {
-        _items.addAll(respM.data);
-      }
 
-      if (_blogAppInfo != null) {
-        int pageSize = _blogAppInfo["pageSize"];
-        if (_page > pageSize) {
-          _refreshController.loadNoData();
+      if (respM.success && respM.data != null && respM.data is List) {
+        List list = respM.data;
+        for (var map in list) {
+          _items.add(map);
         }
+        if (_blogAppInfo != null) {
+          int postCount = _blogAppInfo["postCount"];
+          if (_items.length >= postCount) {
+            _refreshController.loadNoData();
+          }
+          Toast.show("本次获取：${list.length}  总条数:$postCount", context,
+              gravity: Toast.CENTER,duration: 2);
+        }
+      } else {
+        _page = max(_page--, 1);
       }
 
       setState(() {
@@ -143,26 +152,26 @@ class _MpsfMyBlogsScreenState extends State<MpsfMyBlogsScreen>
   @override
   void initState() {
     initBaseCommon(this);
-    log("initState");
+    mpsf_log("initState");
     super.initState();
     onFetchData();
   }
 
   @override
   void didChangeDependencies() {
-    log("didChangeDependencies");
+    mpsf_log("didChangeDependencies");
     super.didChangeDependencies();
   }
 
   @override
   void deactivate() {
-    log("deactivate");
+    mpsf_log("deactivate");
     super.deactivate();
   }
 
   @override
   void dispose() {
-    log("dispose");
+    mpsf_log("dispose");
     super.dispose();
   }
 }

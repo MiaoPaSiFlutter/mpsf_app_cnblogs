@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -69,7 +70,7 @@ class _ItemHotweekState extends State<ItemHotweek>
           return HomeNewsCell(
             model: model,
             callback: () {
-              log("${model.toJson}");
+              mpsf_log("${model.toJson}");
             },
           );
         },
@@ -105,16 +106,20 @@ class _ItemHotweekState extends State<ItemHotweek>
       if (_page == 1) {
         _items.clear();
       }
-      if (respM.data != null && respM.data is List) {
-        for (var map in respM.data) {
+      if (respM.success && respM.data != null && respM.data is List) {
+        List list = respM.data;
+        for (var map in list) {
           HomeNewsListModel model = HomeNewsListModel.fromJson(map);
           _items.add(model);
         }
 
-        if ((respM.data as List).length < _pageSize) {
+        if (list.length < _pageSize) {
           _refreshController.loadNoData();
         }
+      } else {
+        _page = max(_page--, 1);
       }
+      
       setState(() {
         if (respM.success) {
           blankStatus = MpsfBlankStatus.ready;
@@ -145,26 +150,26 @@ class _ItemHotweekState extends State<ItemHotweek>
   @override
   void initState() {
     initBaseCommon(this);
-    log("initState");
+    mpsf_log("initState");
     super.initState();
     onFetchData();
   }
 
   @override
   void didChangeDependencies() {
-    log("didChangeDependencies");
+    mpsf_log("didChangeDependencies");
     super.didChangeDependencies();
   }
 
   @override
   void deactivate() {
-    log("deactivate");
+    mpsf_log("deactivate");
     super.deactivate();
   }
 
   @override
   void dispose() {
-    log("dispose");
+    mpsf_log("dispose");
     super.dispose();
   }
 }

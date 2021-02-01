@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:mpsf_app/common/net/network.dart';
 import 'package:mpsf_app/common/widgets/blank/mpsf_empty_widget.dart';
@@ -20,6 +22,7 @@ class _MpsfMyCollectScreenState extends State<MpsfMyCollectScreen>
     with MpsfCommonFunction {
   List _items = [];
   int _page = 1;
+  int _pageSize = 30;
 
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -80,32 +83,34 @@ class _MpsfMyCollectScreenState extends State<MpsfMyCollectScreen>
   void _onRefresh() async {
     _page = 1;
     await loadData();
-    // _refreshController.refreshCompleted();
   }
 
   void _onLoading() async {
     _page++;
     await loadData();
-    // _refreshController.loadComplete();
   }
 
   Future<void> loadData() async {
     setState(() {
       blankStatus = MpsfBlankStatus.loading;
     });
-    int pageSize = 30;
-    ApiService.fetchBookmarks(page: _page, pageSize: pageSize).then((respM) {
+    ApiService.fetchBookmarks(page: _page, pageSize: _pageSize).then((respM) {
+      _refreshController.refreshCompleted();
       _refreshController.loadComplete();
 
       if (_page == 1) {
         _items.clear();
       }
-      if (respM.data != null) {
+
+      if (respM.success && respM.data != null && respM.data is List) {
         List list = respM.data;
         _items.addAll(list);
-        if (list.length < pageSize){
+
+        if (list.length < _pageSize) {
           _refreshController.loadNoData();
         }
+      } else {
+        _page = max(_page--, 1);
       }
 
       setState(() {
@@ -133,26 +138,26 @@ class _MpsfMyCollectScreenState extends State<MpsfMyCollectScreen>
   @override
   void initState() {
     initBaseCommon(this);
-    log("initState");
+    mpsf_log("initState");
     super.initState();
     onFetchData();
   }
 
   @override
   void didChangeDependencies() {
-    log("didChangeDependencies");
+    mpsf_log("didChangeDependencies");
     super.didChangeDependencies();
   }
 
   @override
   void deactivate() {
-    log("deactivate");
+    mpsf_log("deactivate");
     super.deactivate();
   }
 
   @override
   void dispose() {
-    log("dispose");
+    mpsf_log("dispose");
     super.dispose();
   }
 }
