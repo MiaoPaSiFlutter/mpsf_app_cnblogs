@@ -8,8 +8,6 @@ enum ApiType {
   Home_blogposts,//首页-精华
   Home_newsitems_hotweek,//本周内热门新闻
   Home_newsitems_recommended,//推荐新闻
-  My_blogs,//我的博客
-  My_bookmarks,//我的收藏
   Questions_all,//最新
   Questions_highscore,//高分
   Questions_solved,//已解决

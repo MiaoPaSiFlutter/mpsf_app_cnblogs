@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:mpsf_app/screens/home/model/home_list_model.dart';
-import 'package:mpsf_app/screens/home/relative_date_format.dart';
+import 'package:mpsf_app/utils/relative_date_format.dart';
 import 'package:mpsf_package_common/mpsf_package_common.dart';
 
 class HomeCell extends StatelessWidget {

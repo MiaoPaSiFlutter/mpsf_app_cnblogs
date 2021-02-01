@@ -1,9 +1,15 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:mpsf_app/common/config/config.dart';
 import 'package:mpsf_app/common/config/net_config.dart';
+import 'package:mpsf_app/common/local/local_storage.dart';
+import 'package:mpsf_app/common/manager/app_manager.dart';
+import 'package:mpsf_app/common/net/network.dart';
 import 'package:mpsf_app/common/widgets/blank/mpsf_empty_widget.dart';
 import 'package:mpsf_package_common/mpsf_package_common.dart';
+import 'package:toast/toast.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../common/config/net_config.dart';
@@ -77,7 +83,7 @@ class _MpsfLoginAuthorizeScreenState extends State<MpsfLoginAuthorizeScreen>
             url = url.replaceFirst("#", "?");
             Uri u = Uri.parse(url);
             String code = u.queryParameters['code'];
-            Navigator.pop(context, code);
+            getAuthorizeToken(code);
             return;
           }
         },
@@ -94,6 +100,20 @@ class _MpsfLoginAuthorizeScreenState extends State<MpsfLoginAuthorizeScreen>
   ///////////////////////////////////////////
   ///////////////////////////////////////////
   ///////////////////////////////////////////
+  void getAuthorizeToken(String code) {
+    ApiService.getAuthorizeToken(code).then((ApiResultData respM) {
+      if (respM.success) {
+        Toast.show("SUCCESS", context);
+        String jsonString = json.encode(respM.data);
+        LocalStorage.save(Config.Authorization_Code_Respone, jsonString);
+        AppManager().isLogin = true;
+      } else {
+        Toast.show("${respM.error.message}", context);
+      }
+      Navigator.pop(context, code);
+    });
+  }
+
   @override
   void onFetchData() {
     // TODO: implement onFetchData

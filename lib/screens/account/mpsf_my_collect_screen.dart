@@ -1,37 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:mpsf_app/common/net/network.dart';
 import 'package:mpsf_app/common/widgets/blank/mpsf_empty_widget.dart';
-import 'package:mpsf_app/screens/home/model/home_news_list_model.dart';
-import 'package:mpsf_app/screens/home/widget/home_news_cell.dart';
+import 'package:mpsf_app/screens/blogdetail/mpsf_blog_detail_screen.dart';
+import 'package:mpsf_app/screens/home/model/home_list_model.dart';
+import 'package:mpsf_app/screens/home/widget/home_cell.dart';
+import 'package:mpsf_app/utils/relative_date_format.dart';
 import 'package:mpsf_package_common/mpsf_package_common.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:toast/toast.dart';
 
-/*
-  新闻
-*/
-class ItemNews extends StatefulWidget {
-  ItemNews({Key key}) : super(key: key);
+class MpsfMyCollectScreen extends StatefulWidget {
+  MpsfMyCollectScreen({Key key}) : super(key: key);
 
   @override
-  _ItemNewsState createState() => _ItemNewsState();
+  _MpsfMyCollectScreenState createState() => _MpsfMyCollectScreenState();
 }
 
-class _ItemNewsState extends State<ItemNews>
-    with
-        AutomaticKeepAliveClientMixin,
-        WidgetsBindingObserver,
-        MpsfCommonFunction {
+class _MpsfMyCollectScreenState extends State<MpsfMyCollectScreen>
+    with MpsfCommonFunction {
   List _items = [];
   int _page = 1;
-  int _pageSize = 30;
+
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Scaffold(
+      appBar: AppBar(
+        title: Text('我的收藏'),
+        leading: getBackItem(),
+      ),
       body: Container(
         decoration: BoxDecoration(border: Border.all(color: Colors.red)),
         child: MpsfBodyContainer(
@@ -62,12 +61,10 @@ class _ItemNewsState extends State<ItemNews>
         padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
         itemCount: _items.length,
         itemBuilder: (context, index) {
-          HomeNewsListModel model = _items[index];
-          return HomeNewsCell(
-            model: model,
-            callback: () {
-              log("${model.toJson}");
-            },
+          Map model = _items[index];
+          return CellItem(
+            data: model,
+            callback: () {},
           );
         },
         separatorBuilder: (context, index) {
@@ -83,31 +80,30 @@ class _ItemNewsState extends State<ItemNews>
   void _onRefresh() async {
     _page = 1;
     await loadData();
+    // _refreshController.refreshCompleted();
   }
 
   void _onLoading() async {
     _page++;
     await loadData();
+    // _refreshController.loadComplete();
   }
 
   Future<void> loadData() async {
     setState(() {
       blankStatus = MpsfBlankStatus.loading;
     });
-    ApiService.fetchApi(ApiType.Home_news, page: _page, pageSize: _pageSize)
-        .then((respM) {
-      _refreshController.refreshCompleted();
+    int pageSize = 30;
+    ApiService.fetchBookmarks(page: _page, pageSize: pageSize).then((respM) {
       _refreshController.loadComplete();
+
       if (_page == 1) {
         _items.clear();
       }
-      if (respM.data != null && respM.data is List) {
-        for (var map in respM.data) {
-          HomeNewsListModel model = HomeNewsListModel.fromJson(map);
-          _items.add(model);
-        }
-
-        if ((respM.data as List).length < _pageSize) {
+      if (respM.data != null) {
+        List list = respM.data;
+        _items.addAll(list);
+        if (list.length < pageSize){
           _refreshController.loadNoData();
         }
       }
@@ -131,13 +127,8 @@ class _ItemNewsState extends State<ItemNews>
   ///////////////////////////////////////////
   @override
   void onFetchData() {
-    // TODO: implement onFetchData
     _onRefresh();
   }
-
-  @override
-  // TODO: implement wantKeepAlive
-  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -163,5 +154,57 @@ class _ItemNewsState extends State<ItemNews>
   void dispose() {
     log("dispose");
     super.dispose();
+  }
+}
+
+class CellItem extends StatelessWidget {
+  final Map data;
+  final VoidCallback callback;
+
+  const CellItem({Key key, this.data, this.callback}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: this.callback,
+      child: Container(
+        color: Colors.white,
+        padding: EdgeInsets.all(10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            _buildTitle(context),
+            _buildTool(context),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTitle(BuildContext context) {
+    bool fromCNBlogs = this.data["FromCNBlogs"];
+    return Container(
+      padding: EdgeInsets.only(top: 0),
+      child: Text(
+        this.data["Title"] ?? "",
+        style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            color: Color(0xFF333333)),
+      ),
+    );
+  }
+
+  Widget _buildTool(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.only(top: 5),
+      child: Text(
+        RelativeDateFormat.getTimeLine(context, this.data["DateAdded"] ?? ""),
+        style: TextStyle(
+          fontSize: 13,
+          color: Color(0xFF999999),
+        ),
+      ),
+    );
   }
 }

@@ -1,9 +1,10 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:mpsf_app/common/config/config.dart';
 import 'package:mpsf_app/common/config/net_config.dart';
 import 'package:mpsf_app/common/event_bus/event_bus_header.dart';
 import 'package:mpsf_app/common/local/local_storage.dart';
-import 'package:mpsf_app/common/manager/app_manager.dart';
 
 import '../http_manager.dart';
 
@@ -39,18 +40,8 @@ class RefreshTokenInterceptor extends Interceptor {
 
   ///获取新token
   Future<String> getToken() async {
-    // ignore: non_constant_identifier_names
-    String access_token = await LocalStorage.remove(Config.ACCESS_TOKEN);
-    /*
-    {
-      "access_token": "",
-      "expires_in": 86400,
-      "token_type": "Bearer",
-      "scope": "CnBlogsApi"
-    }
-    */
+    String accessToken;
     Dio tokenDio = Dio(); //创建新Dio实例
-
     try {
       String url = "https://api.cnblogs.com/token"; //refreshToken url
       dynamic data = {
@@ -61,19 +52,17 @@ class RefreshTokenInterceptor extends Interceptor {
       Options options =
           Options(contentType: "application/x-www-form-urlencoded");
 
-      //请求refreshToken刷新的接口
+      //client_credentials授权方式获取token
       var response = await tokenDio.post(url, data: data, options: options);
-      //新的accessToken
-      access_token = response.data['access_token'];
-      //保存新的refreshToken
-      LocalStorage.save(Config.ACCESS_TOKEN, access_token); 
+      String jsonString = json.encode(response.data);
+
+      //保存信息
+      LocalStorage.save(Config.Client_Credentials_Respone, jsonString);
     } on DioError catch (e) {
       if (e.response.statusCode == 401) {
-        //401代表refresh_token过期
-        //refreshToken过期，弹出登录页面
-        eventBus.emit(AppEvent(AppEventType.Login));
+        eventBus.emit(AppEvent(AppEventType.Unauthorized));
       }
     }
-    return access_token;
+    return accessToken;
   }
 }

@@ -27,6 +27,7 @@ class _ItemHotweekState extends State<ItemHotweek>
         MpsfCommonFunction {
   List _items = [];
   int _page = 1;
+  int _pageSize = 30;
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
@@ -85,13 +86,11 @@ class _ItemHotweekState extends State<ItemHotweek>
   void _onRefresh() async {
     _page = 1;
     await loadData();
-    _refreshController.refreshCompleted();
   }
 
   void _onLoading() async {
     _page++;
     await loadData();
-    _refreshController.loadComplete();
   }
 
   Future<void> loadData() async {
@@ -99,8 +98,10 @@ class _ItemHotweekState extends State<ItemHotweek>
       blankStatus = MpsfBlankStatus.loading;
     });
     ApiService.fetchApi(ApiType.Home_newsitems_hotweek,
-            page: _page, pageSize: 30)
+            page: _page, pageSize: _pageSize)
         .then((respM) {
+      _refreshController.refreshCompleted();
+      _refreshController.loadComplete();
       if (_page == 1) {
         _items.clear();
       }
@@ -109,8 +110,11 @@ class _ItemHotweekState extends State<ItemHotweek>
           HomeNewsListModel model = HomeNewsListModel.fromJson(map);
           _items.add(model);
         }
-      }
 
+        if ((respM.data as List).length < _pageSize) {
+          _refreshController.loadNoData();
+        }
+      }
       setState(() {
         if (respM.success) {
           blankStatus = MpsfBlankStatus.ready;

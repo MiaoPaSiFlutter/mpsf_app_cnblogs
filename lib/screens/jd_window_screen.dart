@@ -25,11 +25,10 @@ class _JdWindowScreenState extends State<JdWindowScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     //添加订阅
     appEvent = eventBus.on<AppEvent>((event) {
-      if (event.eventType == AppEventType.Login) {
+      if (event.eventType == AppEventType.Unauthorized) {
         MpsfNavigatorUtils.pushPage(
             context: context, targetPage: MpsfLoginScreen());
       }

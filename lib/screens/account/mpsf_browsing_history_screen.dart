@@ -1,37 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:mpsf_app/common/net/network.dart';
 import 'package:mpsf_app/common/widgets/blank/mpsf_empty_widget.dart';
-import 'package:mpsf_app/screens/home/model/home_news_list_model.dart';
-import 'package:mpsf_app/screens/home/widget/home_news_cell.dart';
+import 'package:mpsf_app/screens/blogdetail/mpsf_blog_detail_screen.dart';
+import 'package:mpsf_app/screens/home/model/home_list_model.dart';
+import 'package:mpsf_app/screens/home/widget/home_cell.dart';
 import 'package:mpsf_package_common/mpsf_package_common.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:toast/toast.dart';
 
-/*
-  新闻
-*/
-class ItemNews extends StatefulWidget {
-  ItemNews({Key key}) : super(key: key);
+class MpsfBrowsingHistoryScreen extends StatefulWidget {
+  MpsfBrowsingHistoryScreen({Key key}) : super(key: key);
 
   @override
-  _ItemNewsState createState() => _ItemNewsState();
+  _MpsfBrowsingHistoryScreenState createState() =>
+      _MpsfBrowsingHistoryScreenState();
 }
 
-class _ItemNewsState extends State<ItemNews>
-    with
-        AutomaticKeepAliveClientMixin,
-        WidgetsBindingObserver,
-        MpsfCommonFunction {
+class _MpsfBrowsingHistoryScreenState extends State<MpsfBrowsingHistoryScreen>
+    with MpsfCommonFunction {
   List _items = [];
   int _page = 1;
-  int _pageSize = 30;
+
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Scaffold(
+      appBar: AppBar(
+        title: Text('本地浏览历史'),
+        leading: getBackItem(),
+      ),
       body: Container(
         decoration: BoxDecoration(border: Border.all(color: Colors.red)),
         child: MpsfBodyContainer(
@@ -49,7 +48,7 @@ class _ItemNewsState extends State<ItemNews>
   }
 
   ///////////////////////////////////////////
-  /// 请求
+  /// BodyWidget
   ///////////////////////////////////////////
   Widget _buildBodyWidget() {
     return SmartRefresher(
@@ -62,11 +61,13 @@ class _ItemNewsState extends State<ItemNews>
         padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
         itemCount: _items.length,
         itemBuilder: (context, index) {
-          HomeNewsListModel model = _items[index];
-          return HomeNewsCell(
+          HomeListModel model = _items[index];
+          return HomeCell(
             model: model,
             callback: () {
-              log("${model.toJson}");
+              MpsfNavigatorUtils.pushPage(
+                  context: context,
+                  targetPage: MpsfBlogDetailScreen(initialUrl: model.url));
             },
           );
         },
@@ -94,21 +95,17 @@ class _ItemNewsState extends State<ItemNews>
     setState(() {
       blankStatus = MpsfBlankStatus.loading;
     });
-    ApiService.fetchApi(ApiType.Home_news, page: _page, pageSize: _pageSize)
+    ApiService.fetchApi(ApiType.Home_blogposts, page: _page, pageSize: 30)
         .then((respM) {
       _refreshController.refreshCompleted();
-      _refreshController.loadComplete();
+
       if (_page == 1) {
         _items.clear();
       }
       if (respM.data != null && respM.data is List) {
         for (var map in respM.data) {
-          HomeNewsListModel model = HomeNewsListModel.fromJson(map);
+          HomeListModel model = HomeListModel.fromJson(map);
           _items.add(model);
-        }
-
-        if ((respM.data as List).length < _pageSize) {
-          _refreshController.loadNoData();
         }
       }
 
@@ -131,20 +128,14 @@ class _ItemNewsState extends State<ItemNews>
   ///////////////////////////////////////////
   @override
   void onFetchData() {
-    // TODO: implement onFetchData
     _onRefresh();
   }
-
-  @override
-  // TODO: implement wantKeepAlive
-  bool get wantKeepAlive => true;
 
   @override
   void initState() {
     initBaseCommon(this);
     log("initState");
     super.initState();
-    onFetchData();
   }
 
   @override

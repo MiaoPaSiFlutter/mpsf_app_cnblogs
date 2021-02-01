@@ -3,11 +3,27 @@ class Config {
   static const DEBUG = true;
 
   /// //////////////////////////////////////常量////////////////////////////////////// ///
-  static const TOKEN_KEY = "token";
-  static const TOKEN_INFOS = "tokenInfos";
-  static const ACCESS_TOKEN = "access_token";
-  static const REFRESH_TOKEN = "refresh_token";
-  static const AUTHORIZE_CODE = "authorize_code";
+  /*
+  博客园Authorization_Code授权返回数据
+  {
+    "access_token": "this is token string",
+    "expires_in": 586400,
+    "token_type": "Bearer",
+    "refresh_token": "this is refresh token string"
+  }
+
+  */
+  static const Authorization_Code_Respone = "Authorization_Code_Respone";
+
+  /*
+  博客园Client_Credentials授权
+  {
+    "access_token": "this token string",
+    "expires_in": 86400,
+    "token_type": "Bearer"
+  } 
+  */
+  static const Client_Credentials_Respone = "Client_Credentials_Respone";
 
   // static const USER_NAME_KEY = "user-name";
   // static const PW_KEY = "user-pw";

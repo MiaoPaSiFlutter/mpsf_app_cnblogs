@@ -84,8 +84,7 @@ class _MpsfLoginScreenState extends State<MpsfLoginScreen>
       if (respM.success) {
         Toast.show("SUCCESS", context);
         String jsonStringB = json.encode(respM.data);
-        LocalStorage.save(Config.ACCESS_TOKEN, respM.data["access_token"]);
-        LocalStorage.save(Config.TOKEN_INFOS, jsonStringB);
+        LocalStorage.save(Config.Authorization_Code_Respone, jsonStringB);
         AppManager().isLogin = true;
         setState(() {
           _authSuccessInfo = jsonStringB;
@@ -162,7 +161,6 @@ class _MpsfLoginScreenState extends State<MpsfLoginScreen>
                 borderRadius: BorderRadius.circular(20.0)),
             onPressed: () {
               _focusNode.unfocus();
-              LocalStorage.save(Config.AUTHORIZE_CODE, _controller.text);
               getAuthorizeToken();
             },
           ),

@@ -18,9 +18,11 @@ void main() async {
   runAppAfter();
 }
 
-Future runAppBefore() async{
-  String tokenInfos = await LocalStorage.get(Config.TOKEN_INFOS);
-  if (tokenInfos != null) {
+Future runAppBefore() async {
+  String authorizationCodeRespone =
+      await LocalStorage.get(Config.Authorization_Code_Respone);
+
+  if (authorizationCodeRespone != null) {
     AppManager().isLogin = true;
   } else {
     AppManager().isLogin = false;
@@ -54,13 +56,10 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           /// 主题主色，决定导航栏颜色
           primaryColor: Colors.white,
-
           /// 背景颜色
           scaffoldBackgroundColor: Colors.white,
-
           /// 分割线颜色
-          dividerColor: Colors.black26.withOpacity(0.1),
-
+          dividerColor: MpsfHexColor("#EEEEEE"),
           /// 字体主题，包括标题、body等文字样式
           textTheme: TextTheme(
             headline1: TextStyle(

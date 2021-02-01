@@ -22,7 +22,7 @@ class ApiService {
     return respM;
   }
 
-  /// 获取用户信息
+  /// 获取登陆用户信息
   static Future<ApiResultData> fetchUserInfo() async {
     String url = "users";
     ApiResultData respM = await httpManager.netFetch(
@@ -35,6 +35,42 @@ class ApiService {
           "Connection": "keep-alive",
           "Transfer-Encoding": "chunked",
         },
+      ),
+    );
+    return respM;
+  }
+
+  /// 获取个人博客信息
+  static Future<ApiResultData> fetchBlogAppInfos({String blogApp}) async {
+    String url = "blogs/$blogApp";
+    ApiResultData respM = await httpManager.netFetch(
+      url,
+      options: Options(
+        method: "get",
+      ),
+    );
+    return respM;
+  }
+
+  /// 获取个人博客随笔列表
+  static Future<ApiResultData> fetchBlogApp({String blogApp, int page}) async {
+    String url = "blogs/$blogApp/posts?" + "pageIndex=$page";
+    ApiResultData respM = await httpManager.netFetch(
+      url,
+      options: Options(
+        method: "get",
+      ),
+    );
+    return respM;
+  }
+
+  /// 分页获取收藏列表
+  static Future<ApiResultData> fetchBookmarks({int page, int pageSize}) async {
+    String url = "Bookmarks?" + "pageIndex=$page&pageSize=$pageSize";
+    ApiResultData respM = await httpManager.netFetch(
+      url,
+      options: Options(
+        method: "get",
       ),
     );
     return respM;
@@ -92,17 +128,6 @@ class ApiService {
       case ApiType.Home_newsitems_recommended: //推荐新闻
         String url =
             "newsitems/@recommended?" + "pageIndex=$page&pageSize=$pageSize";
-        respM =
-            await httpManager.netFetch(url, options: Options(method: "get"));
-        break;
-
-      case ApiType.My_blogs: //我的博客
-        String url = "blogs/$blogApp/posts?" + "pageIndex=$page";
-        respM =
-            await httpManager.netFetch(url, options: Options(method: "get"));
-        break;
-      case ApiType.My_bookmarks: //我的收藏
-        String url = "Bookmarks?" + "pageIndex=$page&pageSize=$pageSize";
         respM =
             await httpManager.netFetch(url, options: Options(method: "get"));
         break;

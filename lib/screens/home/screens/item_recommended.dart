@@ -24,6 +24,7 @@ class _ItemRecommendedState extends State<ItemRecommended>
         MpsfCommonFunction {
   List _items = [];
   int _page = 1;
+  int _pageSize = 30;
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
@@ -82,13 +83,11 @@ class _ItemRecommendedState extends State<ItemRecommended>
   void _onRefresh() async {
     _page = 1;
     await loadData();
-    _refreshController.refreshCompleted();
   }
 
   void _onLoading() async {
     _page++;
     await loadData();
-    _refreshController.loadComplete();
   }
 
   Future<void> loadData() async {
@@ -96,8 +95,10 @@ class _ItemRecommendedState extends State<ItemRecommended>
       blankStatus = MpsfBlankStatus.loading;
     });
     ApiService.fetchApi(ApiType.Home_newsitems_recommended,
-            page: _page, pageSize: 30)
+            page: _page, pageSize: _pageSize)
         .then((respM) {
+      _refreshController.refreshCompleted();
+      _refreshController.loadComplete();
       if (_page == 1) {
         _items.clear();
       }
@@ -105,6 +106,10 @@ class _ItemRecommendedState extends State<ItemRecommended>
         for (var map in respM.data) {
           HomeNewsListModel model = HomeNewsListModel.fromJson(map);
           _items.add(model);
+        }
+
+        if ((respM.data as List).length < _pageSize) {
+          _refreshController.loadNoData();
         }
       }
 

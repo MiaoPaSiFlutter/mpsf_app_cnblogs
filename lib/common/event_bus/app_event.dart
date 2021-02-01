@@ -1,6 +1,8 @@
 class AppEvent {
-    AppEventType eventType;
-    AppEvent(this.eventType);
+  AppEventType eventType;
+  AppEvent(this.eventType);
 }
 
-enum AppEventType { Login }
+enum AppEventType {
+  Unauthorized,//未授权：登录失败
+}
