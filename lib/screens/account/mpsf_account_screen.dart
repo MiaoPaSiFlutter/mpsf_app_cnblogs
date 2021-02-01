@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +9,6 @@ import 'package:mpsf_app/screens/account/mpsf_my_blogs_screen.dart';
 import 'package:mpsf_app/screens/account/mpsf_my_collect_screen.dart';
 import 'package:mpsf_app/screens/login/bean/login_user_bean.dart';
 import 'package:mpsf_app/screens/login/mpsf_login_authorize_screen.dart';
-import 'package:mpsf_app/screens/login/mpsf_login_screen.dart';
 import 'package:mpsf_package_common/mpsf_package_common.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:toast/toast.dart';
@@ -204,6 +202,7 @@ class _MpsfAccountScreenState extends State<MpsfAccountScreen>
     initBaseCommon(this);
     mpsf_log("initState");
     super.initState();
+    onFetchData();
   }
 
   @override
