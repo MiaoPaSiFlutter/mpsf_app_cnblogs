@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:mpsf_package_common/mpsf_package_common.dart';
 
 import 'home/mpsf_home_screen.dart';
-import 'category/mpsf_category_screen.dart';
 import 'discover/mpsf_discover_screen.dart';
 import 'shopcar/mpsf_shopcar_screen.dart';
 import 'account/mpsf_account_screen.dart';
+import 'statuses/mpsf_statuses_screen.dart';
 
 class JdTabbarControllerScreen extends StatefulWidget {
   JdTabbarControllerScreen({Key key}) : super(key: key);
@@ -26,7 +26,7 @@ class _JdTabbarControllerScreenState extends State<JdTabbarControllerScreen> {
       "selImg": "images/Tabbar_Feed_Normal_28x28_",
     },
     1: {
-      "title": "分类",
+      "title": "闪存",
       "norImg": "images/Tabbar_Shop_Highlight_28x28_",
       "selImg": "images/Tabbar_Shop_Normal_28x28_",
     },
@@ -53,7 +53,7 @@ class _JdTabbarControllerScreenState extends State<JdTabbarControllerScreen> {
   void initState() {
     _bottomNavPages
       ..add(MpsfHomeScreen())
-      ..add(MpsfCategoryScreen())
+      ..add(MpsfStatusesScreen())
       ..add(MpsfDiscoverScreen())
       ..add(MpsfShopcarScreen())
       ..add(MpsfAccountScreen());

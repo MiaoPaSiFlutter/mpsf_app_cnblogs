@@ -43,36 +43,130 @@ class ApiService {
   /// 获取个人博客信息
   static Future<ApiResultData> fetchBlogAppInfos({String blogApp}) async {
     String url = "blogs/$blogApp";
-    ApiResultData respM = await httpManager.netFetch(
-      url,
-      options: Options(
-        method: "get",
-      ),
-    );
+    ApiResultData respM =
+        await httpManager.netFetch(url, options: Options(method: "get"));
     return respM;
   }
 
   /// 获取个人博客随笔列表
   static Future<ApiResultData> fetchBlogApp({String blogApp, int page}) async {
     String url = "blogs/$blogApp/posts?" + "pageIndex=$page";
-    ApiResultData respM = await httpManager.netFetch(
-      url,
-      options: Options(
-        method: "get",
-      ),
-    );
+    ApiResultData respM =
+        await httpManager.netFetch(url, options: Options(method: "get"));
     return respM;
   }
 
   /// 分页获取收藏列表
   static Future<ApiResultData> fetchBookmarks({int page, int pageSize}) async {
     String url = "Bookmarks?" + "pageIndex=$page&pageSize=$pageSize";
-    ApiResultData respM = await httpManager.netFetch(
-      url,
-      options: Options(
-        method: "get",
-      ),
-    );
+    ApiResultData respM =
+        await httpManager.netFetch(url, options: Options(method: "get"));
+    return respM;
+  }
+
+  /// 获取最新一条闪存内容
+  static Future<ApiResultData> fetchStatusesRecent() async {
+    String url = "statuses/recent";
+    ApiResultData respM =
+        await httpManager.netFetch(url, options: Options(method: "get"));
+    return respM;
+  }
+
+  /// 发布闪存
+  static Future<ApiResultData> publistStatuses(
+    String content, {
+    bool isPrivate: false,
+  }) async {
+    String url = "statuses";
+    dynamic data = {
+      "Content": content,
+      "IsPrivate": isPrivate,
+    };
+    ApiResultData respM = await httpManager.netFetch(url,
+        data: data, options: Options(method: "post"));
+    return respM;
+  }
+
+  /// 发布闪存评论
+  static Future<ApiResultData> publistStatusesComments(
+    String statusId, {
+    String replyTo,
+    String parentCommentId,
+    String content,
+  }) async {
+    String url = "statuses/$statusId/comments";
+    dynamic data = {
+      "statusId": statusId,
+      "ReplyTo": replyTo,
+      "ParentCommentId": parentCommentId,
+      "Content": content,
+    };
+    ApiResultData respM = await httpManager.netFetch(url,
+        data: data, options: Options(method: "get"));
+    return respM;
+  }
+
+  /// 删除闪存
+  static Future<ApiResultData> deleteStatuses(String statusId) async {
+    String url = "statuses/$statusId";
+    dynamic data = {
+      "statusId": statusId,
+    };
+    ApiResultData respM = await httpManager.netFetch(url,
+        data: data, options: Options(method: "delete"));
+    return respM;
+  }
+
+  /// 删除闪存评论
+  static Future<ApiResultData> deleteStatusesComments(
+      String statusId, String id) async {
+    String url = "statuses/$statusId/comments/$id";
+    dynamic data = {
+      "statusId": statusId,
+      "id": id,
+    };
+    ApiResultData respM = await httpManager.netFetch(url,
+        data: data, options: Options(method: "delete"));
+    return respM;
+  }
+
+  /// 根据Id获取闪存
+  static Future<ApiResultData> fetchStatuses(String id) async {
+    String url = "statuses/$id";
+    dynamic data = {
+      "id": id,
+    };
+    ApiResultData respM = await httpManager.netFetch(url,
+        data: data, options: Options(method: "get"));
+    return respM;
+  }
+
+  /// 获取闪存评论
+  static Future<ApiResultData> fetchStatusesComments(String statusId) async {
+    String url = "statuses/$statusId/comments";
+    dynamic data = {
+      "statusId": statusId,
+    };
+    ApiResultData respM = await httpManager.netFetch(url,
+        data: data, options: Options(method: "get"));
+    return respM;
+  }
+
+  /// 根据类型获取闪存列表
+  static Future<ApiResultData> fetchStatusesList(
+    String type, {
+    int pageIndex,
+    int pageSize,
+    String tag,
+  }) async {
+    String url = "statuses/@$type?";
+    dynamic data = {
+      "pageIndex": "$pageIndex",
+      "pageSize": "$pageSize",
+      "tag": tag,
+    };
+    ApiResultData respM = await httpManager.netFetch(url,
+        data: data, options: Options(method: "get"));
     return respM;
   }
 
