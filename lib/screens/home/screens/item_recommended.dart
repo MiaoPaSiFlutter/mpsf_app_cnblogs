@@ -23,7 +23,7 @@ class _ItemRecommendedState extends State<ItemRecommended>
     with
         AutomaticKeepAliveClientMixin,
         WidgetsBindingObserver,
-        MpsfCommonFunction {
+        MpsfPageMixin {
   List _items = [];
   int _page = 1;
   int _pageSize = 30;
@@ -144,30 +144,4 @@ class _ItemRecommendedState extends State<ItemRecommended>
   @override
   // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
-
-  @override
-  void initState() {
-    initBaseCommon(this);
-    mpsflog("initState");
-    super.initState();
-    onFetchData();
-  }
-
-  @override
-  void didChangeDependencies() {
-    mpsflog("didChangeDependencies");
-    super.didChangeDependencies();
-  }
-
-  @override
-  void deactivate() {
-    mpsflog("deactivate");
-    super.deactivate();
-  }
-
-  @override
-  void dispose() {
-    mpsflog("dispose");
-    super.dispose();
-  }
 }

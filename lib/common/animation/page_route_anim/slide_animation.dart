@@ -22,9 +22,10 @@ class SlideTopRouteBuilder extends PageRouteBuilder {
 
 class SlideBottomRouteBuilder extends PageRouteBuilder {
   final Widget page;
-
-  SlideBottomRouteBuilder(this.page)
+  final RouteSettings routeSettings;
+  SlideBottomRouteBuilder(this.page, this.routeSettings)
       : super(
+            settings: routeSettings,
             pageBuilder: (ctx, animation, secondaryAnimation) => page,
             transitionDuration: Duration(milliseconds: 800),
             transitionsBuilder: (ctx, animation, secondaryAnimation, child) =>

@@ -15,7 +15,7 @@ class MpsfSettingScreen extends StatefulWidget {
 }
 
 class _MpsfSettingScreenState extends State<MpsfSettingScreen>
-    with WidgetsBindingObserver, MpsfCommonFunction {
+    with WidgetsBindingObserver, MpsfPageMixin {
   List _sections = [
     [
       {"title": "账号管理", "subtitle": ""},
@@ -136,30 +136,5 @@ class _MpsfSettingScreenState extends State<MpsfSettingScreen>
   @override
   void onFetchData() {
     // TODO: implement onFetchData
-  }
-
-  @override
-  void initState() {
-    initBaseCommon(this);
-    mpsflog("initState");
-    super.initState();
-  }
-
-  @override
-  void didChangeDependencies() {
-    mpsflog("didChangeDependencies");
-    super.didChangeDependencies();
-  }
-
-  @override
-  void deactivate() {
-    mpsflog("deactivate");
-    super.deactivate();
-  }
-
-  @override
-  void dispose() {
-    mpsflog("dispose");
-    super.dispose();
   }
 }

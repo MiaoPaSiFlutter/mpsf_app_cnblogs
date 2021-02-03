@@ -14,7 +14,7 @@ class _MpsfShopcarScreenState extends State<MpsfShopcarScreen>
     with
         AutomaticKeepAliveClientMixin,
         WidgetsBindingObserver,
-        MpsfCommonFunction {
+        MpsfPageMixin {
 
   @override
   Widget build(BuildContext context) {
@@ -43,30 +43,4 @@ class _MpsfShopcarScreenState extends State<MpsfShopcarScreen>
   @override
   // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
-
-  @override
-  void initState() {
-    initBaseCommon(this);
-    mpsflog("initState");
-    super.initState();
-
-  }
-
-  @override
-  void didChangeDependencies() {
-    mpsflog("didChangeDependencies");
-    super.didChangeDependencies();
-  }
-
-  @override
-  void deactivate() {
-    mpsflog("deactivate");
-    super.deactivate();
-  }
-
-  @override
-  void dispose() {
-    mpsflog("dispose");
-    super.dispose();
-  }
 }

@@ -18,7 +18,7 @@ class MpsfBrowsingHistoryScreen extends StatefulWidget {
 }
 
 class _MpsfBrowsingHistoryScreenState extends State<MpsfBrowsingHistoryScreen>
-    with MpsfCommonFunction {
+    with MpsfPageMixin {
   List _items = [];
   int _page = 1;
 
@@ -130,30 +130,5 @@ class _MpsfBrowsingHistoryScreenState extends State<MpsfBrowsingHistoryScreen>
   @override
   void onFetchData() {
     _onRefresh();
-  }
-
-  @override
-  void initState() {
-    initBaseCommon(this);
-    mpsflog("initState");
-    super.initState();
-  }
-
-  @override
-  void didChangeDependencies() {
-    mpsflog("didChangeDependencies");
-    super.didChangeDependencies();
-  }
-
-  @override
-  void deactivate() {
-    mpsflog("deactivate");
-    super.deactivate();
-  }
-
-  @override
-  void dispose() {
-    mpsflog("dispose");
-    super.dispose();
   }
 }

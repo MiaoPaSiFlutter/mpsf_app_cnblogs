@@ -24,7 +24,7 @@ class MpsfLoginAuthorizeScreen extends StatefulWidget {
 }
 
 class _MpsfLoginAuthorizeScreenState extends State<MpsfLoginAuthorizeScreen>
-    with WidgetsBindingObserver, MpsfCommonFunction {
+    with WidgetsBindingObserver, MpsfPageMixin {
   WebViewController _webViewController;
   static const String client_id = NetConfig.CLIENT_ID;
   static const String redirect_uri = NetConfig.REDIRECT_URI;
@@ -126,30 +126,5 @@ class _MpsfLoginAuthorizeScreenState extends State<MpsfLoginAuthorizeScreen>
       return;
     }
     super.clickBackItem();
-  }
-
-  @override
-  void initState() {
-    initBaseCommon(this);
-    mpsflog("initState");
-    super.initState();
-  }
-
-  @override
-  void didChangeDependencies() {
-    mpsflog("didChangeDependencies");
-    super.didChangeDependencies();
-  }
-
-  @override
-  void deactivate() {
-    mpsflog("deactivate");
-    super.deactivate();
-  }
-
-  @override
-  void dispose() {
-    mpsflog("dispose");
-    super.dispose();
   }
 }

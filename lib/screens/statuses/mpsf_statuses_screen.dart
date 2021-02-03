@@ -13,6 +13,8 @@ import 'package:toast/toast.dart';
 
 import 'statuses_list_bean.dart';
 
+import 'package:mpsf_app/common/screen/page_state.dart';
+
 class MpsfStatusesScreen extends StatefulWidget {
   MpsfStatusesScreen({Key key}) : super(key: key);
 
@@ -24,7 +26,9 @@ class _MpsfCategoryScreenState extends State<MpsfStatusesScreen>
     with
         AutomaticKeepAliveClientMixin,
         WidgetsBindingObserver,
-        MpsfCommonFunction {
+        MpsfPageMixin,
+        FullScreenDialogMixin
+         {
   List _items = [];
   int _page = 1;
   int _pageSize = 30;
@@ -114,108 +118,9 @@ class _MpsfCategoryScreenState extends State<MpsfStatusesScreen>
 
   void clickFilterItem() {
     mpsflog("---clickSettingItem");
-    // _alertDialog();
-    // _alertSimpleDialog();
-    // _modalButtomSheet();
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) {
-        return FullScreenLoadingDialog(
-          dismissDialog: _dismissDialog,
-          outsideDismiss: true,
-        );
-      },
-    );
-  }
-
-  //这个func 就是关闭Dialog的方法，在适当的时候关闭即可
-  void _dismissDialog(Function func) {
-    Future.delayed(const Duration(seconds: 10)).then((value) {
-      func();
-    });
-  }
-
-  ///////////////////////////////////////////
-  /// Dialog
-  ///////////////////////////////////////////
-  _alertDialog() async {
-    var alertDialogs = await showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text("提示"),
-            content: Text("确定要删除吗"),
-            actions: <Widget>[
-              FlatButton(
-                  child: Text("取消"),
-                  onPressed: () => Navigator.pop(context, "cancel")),
-              FlatButton(
-                  child: Text("确定"),
-                  onPressed: () => Navigator.pop(context, "yes")),
-            ],
-          );
-        });
-    return alertDialogs;
-  }
-
-  _alertSimpleDialog() async {
-    var alertDialogs = await showDialog(
-        context: context,
-        builder: (context) {
-          return SimpleDialog(
-            title: Text("提示"),
-            children: <Widget>[
-              Container(
-                width: double.infinity,
-                color: Colors.red,
-                child: FlatButton(
-                  child: Text("Option1"),
-                  onPressed: () => Navigator.pop(context, "Option1"),
-                ),
-              ),
-              FlatButton(
-                child: Text("Option2"),
-                onPressed: () => Navigator.pop(context, "Option2"),
-              ),
-              FlatButton(
-                child: Text("Option3"),
-                onPressed: () => Navigator.pop(context, "Option3"),
-              ),
-            ],
-          );
-        });
-    return alertDialogs;
-  }
-
-  _modalButtomSheet() async {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) {
-        return Container(
-          height: 200,
-          child: Column(
-            children: <Widget>[
-              ListTile(
-                leading: Icon(Icons.settings),
-                title: Text("设置"),
-                onTap: () => Navigator.pop(context),
-              ),
-              ListTile(
-                leading: Icon(Icons.home),
-                title: Text("主页"),
-                onTap: () => Navigator.pop(context),
-              ),
-              ListTile(
-                leading: Icon(Icons.message),
-                title: Text("信息"),
-                onTap: () => Navigator.pop(context),
-              ),
-            ],
-          ),
-        );
-      },
-    );
+    showProgressDialog();
+    Future.delayed(Duration(seconds: 2))
+        .then((value) => dismissProgressDialog());
   }
 
   ///////////////////////////////////////////
@@ -283,31 +188,6 @@ class _MpsfCategoryScreenState extends State<MpsfStatusesScreen>
   @override
   bool get wantKeepAlive => true;
 
-  @override
-  void initState() {
-    initBaseCommon(this);
-    mpsflog("initState");
-    super.initState();
-    onFetchData();
-  }
-
-  @override
-  void didChangeDependencies() {
-    mpsflog("didChangeDependencies");
-    super.didChangeDependencies();
-  }
-
-  @override
-  void deactivate() {
-    mpsflog("deactivate");
-    super.deactivate();
-  }
-
-  @override
-  void dispose() {
-    mpsflog("dispose");
-    super.dispose();
-  }
 }
 
 class HomeNewsCell extends StatelessWidget {

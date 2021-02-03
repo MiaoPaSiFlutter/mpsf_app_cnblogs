@@ -28,7 +28,7 @@ class _MpsfAccountScreenState extends State<MpsfAccountScreen>
     with
         AutomaticKeepAliveClientMixin,
         WidgetsBindingObserver,
-        MpsfCommonFunction {
+        MpsfPageMixin {
   List _sections = [
     [
       {"title": "用户信息", "subtitle": ""},
@@ -195,32 +195,6 @@ class _MpsfAccountScreenState extends State<MpsfAccountScreen>
 
   @override
   bool get wantKeepAlive => true;
-
-  @override
-  void initState() {
-    initBaseCommon(this);
-    mpsflog("initState");
-    super.initState();
-    onFetchData();
-  }
-
-  @override
-  void didChangeDependencies() {
-    mpsflog("didChangeDependencies");
-    super.didChangeDependencies();
-  }
-
-  @override
-  void deactivate() {
-    mpsflog("deactivate");
-    super.deactivate();
-  }
-
-  @override
-  void dispose() {
-    mpsflog("dispose");
-    super.dispose();
-  }
 }
 
 class UserInfoItem extends StatelessWidget {

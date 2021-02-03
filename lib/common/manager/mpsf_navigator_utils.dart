@@ -2,6 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mpsf_app/common/animation/page_route_anim/fade_animation.dart';
+import 'package:mpsf_app/common/animation/page_route_anim/no_animation.dart';
+import 'package:mpsf_app/common/animation/page_route_anim/size_scale_animation.dart';
+import 'package:mpsf_app/common/animation/page_route_anim/slide_animation.dart';
 
 class MpsfNavigatorUtils {
   ///普通打开页面的方法
@@ -24,6 +28,12 @@ class MpsfNavigatorUtils {
       pageRoute = CupertinoPageRoute(builder: (BuildContext context) {
         return targetPage;
       });
+      // pageRoute = FadeRouteBuilder(targetPage, null);
+      // pageRoute = NoAnimRouteBuilder(targetPage, null);
+      // pageRoute = ScaleRouteBuilder(targetPage, null);
+      // pageRoute = SlideTopRouteBuilder(targetPage, null);
+      // pageRoute = SlideBottomRouteBuilder(targetPage, null);
+      pageRoute = SlideRightRouteBuilder(targetPage, null);
     }
 
     if (isReplace) {
@@ -50,7 +60,7 @@ class MpsfNavigatorUtils {
     @required BuildContext context,
     @required Widget targetPage,
     bool isReplace = false,
-    int startMills=400,
+    int startMills = 400,
     bool opaque = false,
     Function(dynamic value) dismissCallBack,
   }) {

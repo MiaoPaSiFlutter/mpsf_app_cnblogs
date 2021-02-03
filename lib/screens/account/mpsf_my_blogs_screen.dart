@@ -21,7 +21,7 @@ class MpsfMyBlogsScreen extends StatefulWidget {
 }
 
 class _MpsfMyBlogsScreenState extends State<MpsfMyBlogsScreen>
-    with MpsfCommonFunction {
+    with MpsfPageMixin {
   List _items = [];
   int _page = 1;
   dynamic _blogAppInfo; //个人博客信息
@@ -147,32 +147,6 @@ class _MpsfMyBlogsScreenState extends State<MpsfMyBlogsScreen>
   @override
   void onFetchData() {
     _onRefresh();
-  }
-
-  @override
-  void initState() {
-    initBaseCommon(this);
-    mpsflog("initState");
-    super.initState();
-    onFetchData();
-  }
-
-  @override
-  void didChangeDependencies() {
-    mpsflog("didChangeDependencies");
-    super.didChangeDependencies();
-  }
-
-  @override
-  void deactivate() {
-    mpsflog("deactivate");
-    super.deactivate();
-  }
-
-  @override
-  void dispose() {
-    mpsflog("dispose");
-    super.dispose();
   }
 }
 

@@ -29,7 +29,7 @@ class MpsfLoginScreen extends StatefulWidget {
 }
 
 class _MpsfLoginScreenState extends State<MpsfLoginScreen>
-    with WidgetsBindingObserver, MpsfCommonFunction {
+    with WidgetsBindingObserver, MpsfPageMixin {
   ///用来控制  TextField 焦点的获取与关闭
   FocusNode _focusNode = FocusNode();
   TextEditingController _controller = TextEditingController();
@@ -176,30 +176,5 @@ class _MpsfLoginScreenState extends State<MpsfLoginScreen>
   @override
   void onFetchData() {
     // TODO: implement onFetchData
-  }
-
-  @override
-  void initState() {
-    initBaseCommon(this);
-    mpsflog("initState");
-    super.initState();
-  }
-
-  @override
-  void didChangeDependencies() {
-    mpsflog("didChangeDependencies");
-    super.didChangeDependencies();
-  }
-
-  @override
-  void deactivate() {
-    mpsflog("deactivate");
-    super.deactivate();
-  }
-
-  @override
-  void dispose() {
-    mpsflog("dispose");
-    super.dispose();
   }
 }

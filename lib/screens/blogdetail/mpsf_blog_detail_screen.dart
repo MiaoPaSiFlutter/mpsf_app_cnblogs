@@ -13,7 +13,7 @@ class MpsfBlogDetailScreen extends StatefulWidget {
 }
 
 class _MpsfBlogDetailScreenState extends State<MpsfBlogDetailScreen>
-    with WidgetsBindingObserver, MpsfCommonFunction {
+    with WidgetsBindingObserver, MpsfPageMixin {
   WebViewController _webViewController;
   @override
   Widget build(BuildContext context) {
@@ -86,30 +86,5 @@ class _MpsfBlogDetailScreenState extends State<MpsfBlogDetailScreen>
       return;
     }
     super.clickBackItem();
-  }
-
-  @override
-  void initState() {
-    initBaseCommon(this);
-    mpsflog("initState");
-    super.initState();
-  }
-
-  @override
-  void didChangeDependencies() {
-    mpsflog("didChangeDependencies");
-    super.didChangeDependencies();
-  }
-
-  @override
-  void deactivate() {
-    mpsflog("deactivate");
-    super.deactivate();
-  }
-
-  @override
-  void dispose() {
-    mpsflog("dispose");
-    super.dispose();
   }
 }

@@ -18,7 +18,7 @@ class _MpsfHomeScreenState extends State<MpsfHomeScreen>
         AutomaticKeepAliveClientMixin,
         SingleTickerProviderStateMixin,
         WidgetsBindingObserver,
-        MpsfCommonFunction {
+        MpsfPageMixin {
   TabController _tabController;
   PageController _pageController;
   final List<Widget> tabBodies = [
@@ -91,28 +91,8 @@ class _MpsfHomeScreenState extends State<MpsfHomeScreen>
 
   @override
   void initState() {
-    initBaseCommon(this);
-    mpsflog("initState");
     super.initState();
     _tabController = TabController(length: tabBodies.length, vsync: this);
     _pageController = PageController();
-  }
-
-  @override
-  void didChangeDependencies() {
-    mpsflog("didChangeDependencies");
-    super.didChangeDependencies();
-  }
-
-  @override
-  void deactivate() {
-    mpsflog("deactivate");
-    super.deactivate();
-  }
-
-  @override
-  void dispose() {
-    mpsflog("dispose");
-    super.dispose();
   }
 }
