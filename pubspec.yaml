@@ -46,9 +46,11 @@ dependencies:
     git:
       url: git://github.com/MiaoPaSiFlutter/flutter_pulltorefresh.git
     
+  # mpsf_package_common:
+  #   git:
+  #     url: git://github.com/MiaoPaSiFlutter/mpsf_package_common.git
   mpsf_package_common:
-    git:
-      url: git://github.com/MiaoPaSiFlutter/mpsf_package_common.git
+    path: ../mpsf_package_common/
 
 dev_dependencies:
   flutter_test:

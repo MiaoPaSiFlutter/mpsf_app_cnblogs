@@ -2,6 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:group_list_view/group_list_view.dart';
+import 'package:mpsf_app/common/manager/mpsf_navigator_utils.dart';
 import 'package:mpsf_app/common/net/network.dart';
 import 'package:mpsf_app/common/widgets/blank/mpsf_empty_widget.dart';
 import 'package:mpsf_app/common/widgets/cell/mpsf_cell.dart';
@@ -150,7 +151,6 @@ class _MpsfAccountScreenState extends State<MpsfAccountScreen>
   }
 
   void clickSettingItem() {
-    mpsf_log("---clickSettingItem");
     MpsfNavigatorUtils.pushPage(
         context: context, targetPage: MpsfSettingScreen());
   }
@@ -194,32 +194,31 @@ class _MpsfAccountScreenState extends State<MpsfAccountScreen>
   }
 
   @override
-  // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
 
   @override
   void initState() {
     initBaseCommon(this);
-    mpsf_log("initState");
+    mpsflog("initState");
     super.initState();
     onFetchData();
   }
 
   @override
   void didChangeDependencies() {
-    mpsf_log("didChangeDependencies");
+    mpsflog("didChangeDependencies");
     super.didChangeDependencies();
   }
 
   @override
   void deactivate() {
-    mpsf_log("deactivate");
+    mpsflog("deactivate");
     super.deactivate();
   }
 
   @override
   void dispose() {
-    mpsf_log("dispose");
+    mpsflog("dispose");
     super.dispose();
   }
 }

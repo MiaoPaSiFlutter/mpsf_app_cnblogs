@@ -91,25 +91,25 @@ class _MpsfBlogDetailScreenState extends State<MpsfBlogDetailScreen>
   @override
   void initState() {
     initBaseCommon(this);
-    mpsf_log("initState");
+    mpsflog("initState");
     super.initState();
   }
 
   @override
   void didChangeDependencies() {
-    mpsf_log("didChangeDependencies");
+    mpsflog("didChangeDependencies");
     super.didChangeDependencies();
   }
 
   @override
   void deactivate() {
-    mpsf_log("deactivate");
+    mpsflog("deactivate");
     super.deactivate();
   }
 
   @override
   void dispose() {
-    mpsf_log("dispose");
+    mpsflog("dispose");
     super.dispose();
   }
 }

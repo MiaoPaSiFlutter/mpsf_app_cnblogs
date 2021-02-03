@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:mpsf_app/common/manager/mpsf_navigator_utils.dart';
 import 'package:mpsf_app/common/net/network.dart';
 import 'package:mpsf_app/common/widgets/blank/mpsf_empty_widget.dart';
 import 'package:mpsf_app/screens/blogdetail/mpsf_blog_detail_screen.dart';
@@ -149,26 +150,26 @@ class _ItemBlogPostsState extends State<ItemBlogPosts>
   @override
   void initState() {
     initBaseCommon(this);
-    mpsf_log("initState");
+    mpsflog("initState");
     super.initState();
     onFetchData();
   }
 
   @override
   void didChangeDependencies() {
-    mpsf_log("didChangeDependencies");
+    mpsflog("didChangeDependencies");
     super.didChangeDependencies();
   }
 
   @override
   void deactivate() {
-    mpsf_log("deactivate");
+    mpsflog("deactivate");
     super.deactivate();
   }
 
   @override
   void dispose() {
-    mpsf_log("dispose");
+    mpsflog("dispose");
     super.dispose();
   }
 }

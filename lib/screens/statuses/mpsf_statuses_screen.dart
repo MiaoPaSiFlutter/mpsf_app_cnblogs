@@ -113,7 +113,7 @@ class _MpsfCategoryScreenState extends State<MpsfStatusesScreen>
   }
 
   void clickFilterItem() {
-    mpsf_log("---clickSettingItem");
+    mpsflog("---clickSettingItem");
     // _alertDialog();
     // _alertSimpleDialog();
     // _modalButtomSheet();
@@ -286,26 +286,26 @@ class _MpsfCategoryScreenState extends State<MpsfStatusesScreen>
   @override
   void initState() {
     initBaseCommon(this);
-    mpsf_log("initState");
+    mpsflog("initState");
     super.initState();
     onFetchData();
   }
 
   @override
   void didChangeDependencies() {
-    mpsf_log("didChangeDependencies");
+    mpsflog("didChangeDependencies");
     super.didChangeDependencies();
   }
 
   @override
   void deactivate() {
-    mpsf_log("deactivate");
+    mpsflog("deactivate");
     super.deactivate();
   }
 
   @override
   void dispose() {
-    mpsf_log("dispose");
+    mpsflog("dispose");
     super.dispose();
   }
 }

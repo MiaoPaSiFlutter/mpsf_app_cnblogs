@@ -1,12 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mpsf_app/common/net/network.dart';
+import 'package:mpsf_app/common/manager/mpsf_navigator_utils.dart';
 import 'package:mpsf_app/common/widgets/blank/mpsf_empty_widget.dart';
 import 'package:mpsf_app/common/widgets/cell/mpsf_cell.dart';
 import 'package:mpsf_app/screens/login/mpsf_login_screen.dart';
 import 'package:group_list_view/group_list_view.dart';
 import 'package:mpsf_package_common/mpsf_package_common.dart';
-import 'package:toast/toast.dart';
 
 class MpsfSettingScreen extends StatefulWidget {
   MpsfSettingScreen({Key key}) : super(key: key);
@@ -142,25 +141,25 @@ class _MpsfSettingScreenState extends State<MpsfSettingScreen>
   @override
   void initState() {
     initBaseCommon(this);
-    mpsf_log("initState");
+    mpsflog("initState");
     super.initState();
   }
 
   @override
   void didChangeDependencies() {
-    mpsf_log("didChangeDependencies");
+    mpsflog("didChangeDependencies");
     super.didChangeDependencies();
   }
 
   @override
   void deactivate() {
-    mpsf_log("deactivate");
+    mpsflog("deactivate");
     super.deactivate();
   }
 
   @override
   void dispose() {
-    mpsf_log("dispose");
+    mpsflog("dispose");
     super.dispose();
   }
 }

@@ -92,7 +92,7 @@ class _MpsfHomeScreenState extends State<MpsfHomeScreen>
   @override
   void initState() {
     initBaseCommon(this);
-    mpsf_log("initState");
+    mpsflog("initState");
     super.initState();
     _tabController = TabController(length: tabBodies.length, vsync: this);
     _pageController = PageController();
@@ -100,19 +100,19 @@ class _MpsfHomeScreenState extends State<MpsfHomeScreen>
 
   @override
   void didChangeDependencies() {
-    mpsf_log("didChangeDependencies");
+    mpsflog("didChangeDependencies");
     super.didChangeDependencies();
   }
 
   @override
   void deactivate() {
-    mpsf_log("deactivate");
+    mpsflog("deactivate");
     super.deactivate();
   }
 
   @override
   void dispose() {
-    mpsf_log("dispose");
+    mpsflog("dispose");
     super.dispose();
   }
 }

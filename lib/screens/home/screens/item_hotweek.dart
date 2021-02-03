@@ -70,7 +70,7 @@ class _ItemHotweekState extends State<ItemHotweek>
           return HomeNewsCell(
             model: model,
             callback: () {
-              mpsf_log("${model.toJson}");
+              mpsflog("${model.toJson}");
             },
           );
         },
@@ -150,26 +150,26 @@ class _ItemHotweekState extends State<ItemHotweek>
   @override
   void initState() {
     initBaseCommon(this);
-    mpsf_log("initState");
+    mpsflog("initState");
     super.initState();
     onFetchData();
   }
 
   @override
   void didChangeDependencies() {
-    mpsf_log("didChangeDependencies");
+    mpsflog("didChangeDependencies");
     super.didChangeDependencies();
   }
 
   @override
   void deactivate() {
-    mpsf_log("deactivate");
+    mpsflog("deactivate");
     super.deactivate();
   }
 
   @override
   void dispose() {
-    mpsf_log("dispose");
+    mpsflog("dispose");
     super.dispose();
   }
 }

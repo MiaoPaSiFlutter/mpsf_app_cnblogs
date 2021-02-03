@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:mpsf_app/common/event_bus/event_bus_header.dart';
 import 'package:mpsf_app/common/event_bus/event_bus_utils.dart';
-import 'package:mpsf_package_common/mpsf_package_common.dart';
+import 'package:mpsf_app/common/manager/mpsf_navigator_utils.dart';
+import 'package:mpsf_app/screens/login/mpsf_login_screen.dart';
 
 import 'jd_tabbar_controller_screen.dart';
-import 'login/mpsf_login_screen.dart';
 
 class JdWindowScreen extends StatefulWidget {
   JdWindowScreen({Key key}) : super(key: key);

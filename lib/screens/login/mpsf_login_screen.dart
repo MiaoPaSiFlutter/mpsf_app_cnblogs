@@ -9,7 +9,7 @@ import 'package:mpsf_app/common/net/network.dart';
 import 'package:mpsf_app/common/widgets/blank/mpsf_empty_widget.dart';
 import 'package:mpsf_package_common/mpsf_package_common.dart';
 import 'package:toast/toast.dart';
-import 'mpsf_login_authorize_screen.dart';
+// import 'mpsflogin_authorize_screen.dart';
 
 OutlineInputBorder border = const OutlineInputBorder(
     borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -96,15 +96,15 @@ class _MpsfLoginScreenState extends State<MpsfLoginScreen>
   }
 
   //这是一个带有异步延迟操作的方法，首先是进行路由导航至下一个页面，然后延迟操作将返回的值car赋予result，这个result是一个将来值。
-  void enterWebToLogin(BuildContext context) async {
-    final result = await Navigator.push(context,
-        CupertinoPageRoute(builder: (BuildContext context) {
-      return MpsfLoginAuthorizeScreen();
-    }));
+  // void enterWebToLogin(BuildContext context) async {
+  //   final result = await Navigator.push(context,
+  //       CupertinoPageRoute(builder: (BuildContext context) {
+  //     return MpsfLoginAuthorizeScreen();
+  //   }));
 
-    this._controller.text = '$result'; // 设置初始值
-    setState(() {});
-  }
+  //   this._controller.text = '$result'; // 设置初始值
+  //   setState(() {});
+  // }
 
   Widget _buildAuthCodeInputWidget() {
     return Container(
@@ -148,7 +148,7 @@ class _MpsfLoginScreenState extends State<MpsfLoginScreen>
                 borderRadius: BorderRadius.circular(20.0)),
             onPressed: () {
               _focusNode.unfocus();
-              enterWebToLogin(context);
+              // enterWebToLogin(context);
             },
           ),
           RaisedButton(
@@ -181,25 +181,25 @@ class _MpsfLoginScreenState extends State<MpsfLoginScreen>
   @override
   void initState() {
     initBaseCommon(this);
-    mpsf_log("initState");
+    mpsflog("initState");
     super.initState();
   }
 
   @override
   void didChangeDependencies() {
-    mpsf_log("didChangeDependencies");
+    mpsflog("didChangeDependencies");
     super.didChangeDependencies();
   }
 
   @override
   void deactivate() {
-    mpsf_log("deactivate");
+    mpsflog("deactivate");
     super.deactivate();
   }
 
   @override
   void dispose() {
-    mpsf_log("dispose");
+    mpsflog("dispose");
     super.dispose();
   }
 }
