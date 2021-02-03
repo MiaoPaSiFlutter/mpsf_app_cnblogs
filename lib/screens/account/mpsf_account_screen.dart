@@ -54,7 +54,7 @@ class _MpsfAccountScreenState extends State<MpsfAccountScreen>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      appBar: AppBar(title: Text("我的"), actions: getAppBarActions()),
+      appBar: AppBar(title: Text("我的"), actions: _getAppBarActions()),
       body: Container(
         decoration: BoxDecoration(border: Border.all(color: Colors.red)),
         child: MpsfBodyContainer(
@@ -134,7 +134,7 @@ class _MpsfAccountScreenState extends State<MpsfAccountScreen>
   }
 
   ///导航栏返回键
-  List<Widget> getAppBarActions() {
+  List<Widget> _getAppBarActions() {
     List<Widget> actions = [];
     Widget setting = Container(
       width: getNavigationBarHeight(),

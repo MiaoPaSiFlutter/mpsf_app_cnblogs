@@ -5,6 +5,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:mpsf_app/common/net/network.dart';
 import 'package:mpsf_app/common/widgets/blank/mpsf_empty_widget.dart';
+import 'package:mpsf_app/common/widgets/loading/full_screen_loading_dialog.dart';
 import 'package:mpsf_app/utils/relative_date_format.dart';
 import 'package:mpsf_package_common/mpsf_package_common.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -31,12 +32,15 @@ class _MpsfCategoryScreenState extends State<MpsfStatusesScreen>
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
+  ScrollController _listViewController = ScrollController();
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('闪存'),
+        actions: _getAppBarActions(),
       ),
       body: Container(
         decoration: BoxDecoration(border: Border.all(color: Colors.red)),
@@ -50,6 +54,17 @@ class _MpsfCategoryScreenState extends State<MpsfStatusesScreen>
           },
           bodyWidget: _buildBodyWidget(),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.vertical_align_top, color: Colors.black, size: 40),
+        onPressed: () {
+          print('FloatingActionButton');
+          _listViewController.animateTo(
+              _listViewController.position.minScrollExtent,
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeOut);
+        },
+        backgroundColor: Colors.yellow,
       ),
     );
   }
@@ -65,6 +80,7 @@ class _MpsfCategoryScreenState extends State<MpsfStatusesScreen>
       onRefresh: _onRefresh,
       onLoading: _onLoading,
       child: ListView.separated(
+        controller: _listViewController,
         padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
         itemCount: _items.length,
         itemBuilder: (context, index) {
@@ -77,6 +93,128 @@ class _MpsfCategoryScreenState extends State<MpsfStatusesScreen>
           return Container(color: MpsfHexColor('#E8EDFE'), height: 1);
         },
       ),
+    );
+  }
+
+  ///导航栏返回键
+  List<Widget> _getAppBarActions() {
+    List<Widget> actions = [];
+    Widget setting = Container(
+      width: getNavigationBarHeight(),
+      height: double.infinity,
+      child: IconButton(
+        onPressed: clickFilterItem,
+        icon: Icon(Icons.more_horiz),
+      ),
+    );
+
+    actions.add(setting);
+    return actions;
+  }
+
+  void clickFilterItem() {
+    mpsf_log("---clickSettingItem");
+    // _alertDialog();
+    // _alertSimpleDialog();
+    // _modalButtomSheet();
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) {
+        return FullScreenLoadingDialog(
+          dismissDialog: _dismissDialog,
+          outsideDismiss: true,
+        );
+      },
+    );
+  }
+
+  //这个func 就是关闭Dialog的方法，在适当的时候关闭即可
+  void _dismissDialog(Function func) {
+    Future.delayed(const Duration(seconds: 10)).then((value) {
+      func();
+    });
+  }
+
+  ///////////////////////////////////////////
+  /// Dialog
+  ///////////////////////////////////////////
+  _alertDialog() async {
+    var alertDialogs = await showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("提示"),
+            content: Text("确定要删除吗"),
+            actions: <Widget>[
+              FlatButton(
+                  child: Text("取消"),
+                  onPressed: () => Navigator.pop(context, "cancel")),
+              FlatButton(
+                  child: Text("确定"),
+                  onPressed: () => Navigator.pop(context, "yes")),
+            ],
+          );
+        });
+    return alertDialogs;
+  }
+
+  _alertSimpleDialog() async {
+    var alertDialogs = await showDialog(
+        context: context,
+        builder: (context) {
+          return SimpleDialog(
+            title: Text("提示"),
+            children: <Widget>[
+              Container(
+                width: double.infinity,
+                color: Colors.red,
+                child: FlatButton(
+                  child: Text("Option1"),
+                  onPressed: () => Navigator.pop(context, "Option1"),
+                ),
+              ),
+              FlatButton(
+                child: Text("Option2"),
+                onPressed: () => Navigator.pop(context, "Option2"),
+              ),
+              FlatButton(
+                child: Text("Option3"),
+                onPressed: () => Navigator.pop(context, "Option3"),
+              ),
+            ],
+          );
+        });
+    return alertDialogs;
+  }
+
+  _modalButtomSheet() async {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Container(
+          height: 200,
+          child: Column(
+            children: <Widget>[
+              ListTile(
+                leading: Icon(Icons.settings),
+                title: Text("设置"),
+                onTap: () => Navigator.pop(context),
+              ),
+              ListTile(
+                leading: Icon(Icons.home),
+                title: Text("主页"),
+                onTap: () => Navigator.pop(context),
+              ),
+              ListTile(
+                leading: Icon(Icons.message),
+                title: Text("信息"),
+                onTap: () => Navigator.pop(context),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -273,6 +411,150 @@ class HomeNewsCell extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// ignore: must_be_immutable
+class ShowCommonAlert extends Dialog {
+  //子布局      =======  意思是说，上下通用，中间的子布局可以当作参数传过来。
+  Widget childWidget;
+  //左侧按钮
+  String negativeText;
+  //右侧按钮
+  String positiveText;
+  //标题
+  String title;
+  //显示标题下的分隔线
+  bool isShowTitleDivi;
+  //显示底部确认按钮上的分隔线
+  bool isShowBottomDivi;
+  //左侧按钮点击事件（取消）
+  Function onCloseEvent;
+  //右侧按钮点击事件（确认）
+  Function onPositivePressEvent;
+
+  //标题默认高度
+  double defaultTitleHeight = 40.0;
+
+  ShowCommonAlert({
+    Key key,
+    @required this.childWidget,
+    @required this.title,
+    this.negativeText,
+    this.positiveText,
+    this.onPositivePressEvent,
+    this.isShowTitleDivi = true,
+    this.isShowBottomDivi = true,
+    @required this.onCloseEvent,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return new Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: new Material(
+        type: MaterialType.transparency,
+        child: new Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            //白色背景
+            new Container(
+              decoration: ShapeDecoration(
+                color: Color(0xffffffff), //可以自定义一个颜色传过来
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(8.0),
+                  ),
+                ),
+              ),
+              margin: const EdgeInsets.all(12.0),
+              child: new Column(
+                children: <Widget>[
+                  //标题
+                  new Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Container(
+                      height: defaultTitleHeight,
+                      child: Center(
+                        child: new Text(
+                          title,
+                          style: new TextStyle(
+                              fontSize: 16.0, color: Color(0xff666666)),
+                        ),
+                      ),
+                    ),
+                  ),
+                  //标题下的分隔线
+                  new Container(
+                    color:
+                        isShowTitleDivi ? Color(0xffe0e0e0) : Color(0xffffffff),
+                    margin: EdgeInsets.only(bottom: 10.0),
+                    height: 1.0,
+                  ),
+                  //中间显示的Widget
+                  new Container(
+                    constraints: BoxConstraints(minHeight: 80.0),
+                    child: new Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: childWidget,
+                    ),
+                  ),
+                  //底部的分隔线
+                  new Container(
+                    color: isShowBottomDivi ? Color(0xffe0e0e0) : Colors.white,
+                    margin: EdgeInsets.only(top: 10.0),
+                    height: 1.0,
+                  ),
+                  //底部的确认取消按钮
+                  this._buildBottomButtonGroup(),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBottomButtonGroup() {
+    var widgets = <Widget>[];
+    if (negativeText != null && negativeText.isNotEmpty)
+      widgets.add(_buildBottomCancelButton());
+    if (positiveText != null && positiveText.isNotEmpty)
+      widgets.add(_buildBottomPositiveButton());
+    return Container(
+      height: 54.0,
+      child: new Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: widgets,
+      ),
+    );
+  }
+
+  Widget _buildBottomCancelButton() {
+    return new FlatButton(
+      onPressed: onCloseEvent,
+      child: new Text(
+        negativeText,
+        style: TextStyle(
+          fontSize: 16.0,
+          color: Colors.grey,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBottomPositiveButton() {
+    return new FlatButton(
+      onPressed: onPositivePressEvent,
+      child: new Text(
+        positiveText,
+        style: TextStyle(
+          color: Colors.red,
+          fontSize: 16.0,
+        ),
       ),
     );
   }

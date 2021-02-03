@@ -31,4 +31,17 @@ class HttpLogInterceptor extends Interceptor{
     print("---------End Http Response---------");
     return super.onResponse(response);
   }
+
+  @override
+  Future onError(DioError err) {
+    print("---------Start Http Error---------");
+    print("Response_BaseUrl:${err.request.baseUrl}");
+    print("Response_Path:${err.request.path}");
+    print("Response_StatusCode:${err.response.statusCode}");
+    print("Response_StatusMessage:${err.response.statusMessage}");
+    print("Response_Headers:${err.response.headers.toString()}");
+    print("Response_Data:${err.response.data.toString()}");
+    print("---------End Http Error---------");
+    return super.onError(err);
+  }
 }
