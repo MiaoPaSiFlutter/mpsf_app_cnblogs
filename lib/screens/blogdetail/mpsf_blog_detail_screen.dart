@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mpsf_app/common/mixin/mpsf_blank_mixin/mpsf_container_info.dart';
 import 'package:mpsf_app/common/mixin/mpsf_blank_mixin/mpsf_container_mixin.dart';
 import 'package:mpsf_package_common/mpsf_package_common.dart';
+import 'package:toast/toast.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class MpsfBlogDetailScreen extends StatefulWidget {
@@ -19,10 +20,7 @@ class _MpsfBlogDetailScreenState extends State<MpsfBlogDetailScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('详情'),
-        leading: getBackItem(),
-      ),
+      appBar: AppBar(title: Text('详情'), leading: getBackItem()),
       body: buildMpsfContainer(),
     );
   }
@@ -49,7 +47,8 @@ class _MpsfBlogDetailScreenState extends State<MpsfBlogDetailScreen>
           setContainerStatus(MCIStatus.ready);
         },
         onWebResourceError: (error) {
-          setContainerStatus(MCIStatus.error);
+          Toast.show("${error.description}", context);
+          // setContainerStatus(MCIStatus.error);
         },
         gestureNavigationEnabled: true,
       ),
