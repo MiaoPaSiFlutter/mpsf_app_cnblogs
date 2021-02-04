@@ -101,7 +101,7 @@ class _MpsfCategoryScreenState extends State<MpsfStatusesScreen>
 
   void clickFilterItem() {
     mpsflog("---clickSettingItem");
-    showProgressDialog(afterDismiss: (){
+    showProgressDialog(afterDismiss: () {
       Toast.show("afterDismiss", context);
     });
     Future.delayed(Duration(seconds: 10))
