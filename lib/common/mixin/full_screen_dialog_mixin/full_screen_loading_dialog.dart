@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 class FullScreenLoadingDialog extends StatefulWidget {
   final Widget progress;
@@ -17,8 +18,7 @@ class FullScreenLoadingDialog extends StatefulWidget {
       _FullScreenLoadingDialogState();
 }
 
-class _FullScreenLoadingDialogState
-    extends State<FullScreenLoadingDialog> {
+class _FullScreenLoadingDialogState extends State<FullScreenLoadingDialog> {
   @override
   void initState() {
     super.initState();
@@ -43,14 +43,21 @@ class _FullScreenLoadingDialogState
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-
+    String filepath = "assets/lottiefiles/material loading.json";
     return WillPopScope(
       child: Container(
         color: widget.bgColor ?? Color.fromRGBO(34, 34, 34, 0.3),
         width: size.width,
         height: size.height,
         alignment: Alignment.center,
-        child: widget.progress ?? CircularProgressIndicator(),
+        child: widget.progress ??
+            Center(
+              child: Container(
+                width: 100,
+                height: 100,
+                child: Lottie.asset(filepath),
+              ),
+            ),
       ),
       onWillPop: () async {
         widget.controller.dismissDialog();
@@ -69,4 +76,3 @@ class DialogLoadingController extends ChangeNotifier {
     }
   }
 }
-
