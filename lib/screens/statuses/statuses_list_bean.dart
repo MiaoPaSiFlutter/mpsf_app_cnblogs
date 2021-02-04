@@ -11,6 +11,10 @@ class StatusesListBean {
   int userId;
   String userGuid;
 
+  /// 评论数据，需要单独请求
+  List commonments = [];
+  bool reqCommonments = false;
+
   StatusesListBean(
       {this.id,
       this.content,

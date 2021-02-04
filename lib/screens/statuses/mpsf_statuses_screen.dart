@@ -177,17 +177,21 @@ class _MpsfCategoryScreenState extends State<MpsfStatusesScreen>
   bool get wantKeepAlive => true;
 }
 
-class HomeNewsCell extends StatelessWidget {
+class HomeNewsCell extends StatefulWidget {
   final StatusesListBean model;
   final VoidCallback callback;
-
-  const HomeNewsCell({Key key, this.model, this.callback}) : super(key: key);
+  HomeNewsCell({Key key, this.model, this.callback}) : super(key: key);
 
   @override
+  _HomeNewsCellState createState() => _HomeNewsCellState();
+}
+
+class _HomeNewsCellState extends State<HomeNewsCell> {
+  @override
   Widget build(BuildContext context) {
-    String avatar = this.model?.userIconUrl;
+    String avatar = this.widget.model?.userIconUrl;
     return GestureDetector(
-      onTap: this.callback,
+      onTap: this.widget.callback,
       child: Container(
         color: Colors.white,
         padding: EdgeInsets.all(10),
@@ -204,7 +208,7 @@ class HomeNewsCell extends StatelessWidget {
                 children: <Widget>[
                   _buildDateAdded(context),
                   _buildDescription(context),
-                  // _buildTool(context),
+                  _buildCommentList(context),
                 ],
               ),
             )
@@ -217,7 +221,8 @@ class HomeNewsCell extends StatelessWidget {
   Widget _buildDateAdded(BuildContext context) {
     return Container(
       child: Text(
-        RelativeDateFormat.getTimeLine(context, this.model.dateAdded ?? ""),
+        RelativeDateFormat.getTimeLine(
+            context, this.widget.model.dateAdded ?? ""),
         style: TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.w500,
@@ -240,8 +245,11 @@ class HomeNewsCell extends StatelessWidget {
                   style: TextStyle(fontSize: 14, color: Colors.black),
                   children: [
                     TextSpan(
-                      text: this.model?.userDisplayName ?? "",
-                      style: TextStyle(fontSize: 14, color: Colors.blue,),
+                      text: this.widget.model?.userDisplayName ?? "",
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.blue,
+                      ),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
                           print('点击了服务条款');
@@ -252,7 +260,7 @@ class HomeNewsCell extends StatelessWidget {
                       style: TextStyle(fontSize: 14, color: Colors.black),
                     ),
                     TextSpan(
-                      text: this.model?.content ?? "",
+                      text: this.widget.model?.content ?? "",
                     ),
                   ],
                 ),
@@ -262,19 +270,74 @@ class HomeNewsCell extends StatelessWidget {
         ));
   }
 
-  Widget _buildTool(BuildContext context) {
+  Widget _buildCommentList(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(top: 5),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.red),
+      ),
+      child: ListView.builder(
+        shrinkWrap: true,
+        physics: new NeverScrollableScrollPhysics(),
+        itemCount: this.widget.model.commonments.length,
+        itemBuilder: (context, index) {
+          return _buildCommonment(this.widget.model.commonments[index]);
+        },
+      ),
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (this.widget.model.reqCommonments == false) {
+      fetchCommonmentData();
+    } else {
+      print("评论数据已请求过。");
+    }
+  }
+
+  fetchCommonmentData() {
+    ApiService.fetchStatusesComments("${this.widget.model.id}").then((value) {
+      this.widget.model.reqCommonments = true;
+      if (value.success) {
+        this.widget.model.commonments.addAll(value.data);
+        setState(() {});
+      } else {}
+    });
+  }
+
+  Widget _buildCommonment(dynamic commonment) {
+    return Container(
       child: Row(
-        children: <Widget>[
+        children: [
+          MpsfImageView(commonment["UserIconUrl"] ?? "", width: 50, height: 50),
           Expanded(
-            child: Row(
-              children: <Widget>[
-                Text(
-                  "${this.model?.commentCount} 评论   ",
-                  style: TextStyle(fontSize: 11, color: Colors.grey),
-                ),
-              ],
+            child: RichText(
+              text: TextSpan(
+                text: '',
+                style: TextStyle(fontSize: 14, color: Colors.black),
+                children: [
+                  TextSpan(
+                    text: commonment["UserDisplayName"] ?? "",
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.blue,
+                    ),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        print('点击了服务条款');
+                      },
+                  ),
+                  TextSpan(
+                    text: ':',
+                    style: TextStyle(fontSize: 14, color: Colors.black),
+                  ),
+                  TextSpan(
+                    text: commonment["Content"] ?? "",
+                  ),
+                ],
+              ),
             ),
           ),
         ],
