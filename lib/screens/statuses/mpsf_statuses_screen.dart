@@ -48,8 +48,8 @@ class _MpsfCategoryScreenState extends State<MpsfStatusesScreen>
           print('FloatingActionButton');
           _listViewController.animateTo(
               _listViewController.position.minScrollExtent,
-              duration: const Duration(milliseconds: 500),
-              curve: Curves.easeOut);
+              duration: const Duration(milliseconds: 10),
+              curve: Curves.linear);
         },
         backgroundColor: Colors.yellow,
       ),
@@ -188,8 +188,39 @@ class HomeNewsCell extends StatefulWidget {
 
 class _HomeNewsCellState extends State<HomeNewsCell> {
   @override
+  void initState() {
+    super.initState();
+    if (this.widget.model.reqCommonments == false) {
+      fetchCommonmentData();
+    } else {
+      print("评论数据已请求过。");
+    }
+  }
+
+  fetchCommonmentData() {
+    ApiService.fetchStatusesComments("${this.widget.model.id}").then((value) {
+      this.widget.model.reqCommonments = true;
+      if (value.success) {
+        this.widget.model.commonments.addAll(value.data);
+        /*
+        mounted 是 bool 类型，表示当前 State 是否加载到树⾥。
+        常用于判断页面是否释放。
+        比如在程序中有些异步的处理，当处理结束时直接调用setState方法会直接报错，
+        因为页面已经释放（dispose）了，此时无法渲染页面，这时就可以使用mounted来进行判断页面是否被释放，
+        如果释放了就不进行渲染。
+        */
+        if (mounted) {
+          setState(() {});
+        }
+      } else {}
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     String avatar = this.widget.model?.userIconUrl;
+    int itemCount = this.widget.model.commonments.length;
+
     return GestureDetector(
       onTap: this.widget.callback,
       child: Container(
@@ -208,7 +239,9 @@ class _HomeNewsCellState extends State<HomeNewsCell> {
                 children: <Widget>[
                   _buildDateAdded(context),
                   _buildDescription(context),
-                  _buildCommentList(context),
+                  itemCount > 0
+                      ? _buildCommentList(context)
+                      : _buildAddNewCommonment(),
                 ],
               ),
             )
@@ -271,15 +304,17 @@ class _HomeNewsCellState extends State<HomeNewsCell> {
   }
 
   Widget _buildCommentList(BuildContext context) {
+    int itemCount = this.widget.model.commonments.length;
     return Container(
       padding: EdgeInsets.only(top: 5),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.red),
+        // border: Border.all(color: Colors.red,),
+        color: Colors.grey[200],
       ),
       child: ListView.builder(
         shrinkWrap: true,
-        physics: new NeverScrollableScrollPhysics(),
-        itemCount: this.widget.model.commonments.length,
+        physics: NeverScrollableScrollPhysics(),
+        itemCount: itemCount > 5 ? 5 : itemCount,
         itemBuilder: (context, index) {
           return _buildCommonment(this.widget.model.commonments[index]);
         },
@@ -287,41 +322,23 @@ class _HomeNewsCellState extends State<HomeNewsCell> {
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-    if (this.widget.model.reqCommonments == false) {
-      fetchCommonmentData();
-    } else {
-      print("评论数据已请求过。");
-    }
-  }
-
-  fetchCommonmentData() {
-    ApiService.fetchStatusesComments("${this.widget.model.id}").then((value) {
-      this.widget.model.reqCommonments = true;
-      if (value.success) {
-        this.widget.model.commonments.addAll(value.data);
-        setState(() {});
-      } else {}
-    });
-  }
-
   Widget _buildCommonment(dynamic commonment) {
     return Container(
+      padding: EdgeInsets.only(bottom: 5),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          MpsfImageView(commonment["UserIconUrl"] ?? "", width: 50, height: 50),
+          MpsfImageView(commonment["UserIconUrl"] ?? "", width: 20, height: 20),
           Expanded(
             child: RichText(
               text: TextSpan(
                 text: '',
-                style: TextStyle(fontSize: 14, color: Colors.black),
+                style: TextStyle(fontSize: 12, color: Colors.black),
                 children: [
                   TextSpan(
                     text: commonment["UserDisplayName"] ?? "",
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 12,
                       color: Colors.blue,
                     ),
                     recognizer: TapGestureRecognizer()
@@ -331,7 +348,7 @@ class _HomeNewsCellState extends State<HomeNewsCell> {
                   ),
                   TextSpan(
                     text: ':',
-                    style: TextStyle(fontSize: 14, color: Colors.black),
+                    style: TextStyle(fontSize: 12, color: Colors.black),
                   ),
                   TextSpan(
                     text: commonment["Content"] ?? "",
@@ -343,5 +360,33 @@ class _HomeNewsCellState extends State<HomeNewsCell> {
         ],
       ),
     );
+  }
+
+  Widget _buildAddNewCommonment() {
+    return Container(
+      padding: EdgeInsets.only(bottom: 5),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            child: GestureDetector(
+              child: RaisedButton(
+                elevation: 30,
+                onPressed: _showAddNewCommonentDialog,
+                child: Text(
+                  "去评论",
+                  style: TextStyle(fontSize: 12, color: Colors.black),
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  void _showAddNewCommonentDialog (){
+    Toast.show("去评论", context);
   }
 }
