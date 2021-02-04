@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:mpsf_app/common/mixin/mpsf_blank_mixin/mpsf_container_info.dart';
 import 'package:mpsf_app/common/mixin/mpsf_blank_mixin/mpsf_container_mixin.dart';
@@ -8,7 +9,9 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 class MpsfBlogDetailScreen extends StatefulWidget {
   final String initialUrl;
-  MpsfBlogDetailScreen({Key key, this.initialUrl}) : super(key: key);
+  final String htmlString;
+  MpsfBlogDetailScreen({Key key, this.initialUrl, this.htmlString})
+      : super(key: key);
 
   @override
   _MpsfBlogDetailScreenState createState() => _MpsfBlogDetailScreenState();
@@ -37,6 +40,9 @@ class _MpsfBlogDetailScreenState extends State<MpsfBlogDetailScreen>
         javascriptMode: JavascriptMode.unrestricted,
         onWebViewCreated: (WebViewController webViewController) {
           _webViewController = webViewController;
+          if (widget.htmlString != null) {
+            _loadHtmlFromAssets();
+          }
         },
         onPageStarted: (String url) {
           print('Page started loading: $url');
@@ -77,5 +83,13 @@ class _MpsfBlogDetailScreenState extends State<MpsfBlogDetailScreen>
       return;
     }
     super.clickBackItem();
+  }
+
+  _loadHtmlFromAssets() async {
+    // String fileText = await rootBundle.loadString('assets/help.html');
+    String fileText = widget.htmlString;
+    _webViewController.loadUrl(Uri.dataFromString(fileText,
+            mimeType: 'text/html', encoding: Encoding.getByName('utf-8'))
+        .toString());
   }
 }

@@ -170,6 +170,22 @@ class ApiService {
     return respM;
   }
 
+  /// 获取新闻内容
+  static Future<ApiResultData> fetchNewsItemsInfo(String id) async {
+    String url = "newsitems/$id/body";
+    dynamic data = {
+      "id": id,
+    };
+    ApiResultData respM = await httpManager.netFetch(url,
+        data: data, options: Options(method: "get"));
+    return respM;
+  }
+
+
+
+
+
+
   /// 获取我的博客列表
   static Future<ApiResultData> fetchApi(ApiType api,
       {String blogApp, int page, int pageSize}) async {

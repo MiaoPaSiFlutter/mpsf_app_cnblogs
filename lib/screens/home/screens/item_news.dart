@@ -1,9 +1,11 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:mpsf_app/common/manager/mpsf_navigator_utils.dart';
 import 'package:mpsf_app/common/mixin/mpsf_blank_mixin/mpsf_container_info.dart';
 import 'package:mpsf_app/common/mixin/mpsf_blank_mixin/mpsf_container_mixin.dart';
 import 'package:mpsf_app/common/net/network.dart';
+import 'package:mpsf_app/screens/blogdetail/mpsf_blog_detail_screen.dart';
 import 'package:mpsf_app/screens/home/model/home_news_list_model.dart';
 import 'package:mpsf_app/screens/home/widget/home_news_cell.dart';
 import 'package:mpsf_package_common/mpsf_package_common.dart';
@@ -59,7 +61,15 @@ class _ItemNewsState extends State<ItemNews>
           return HomeNewsCell(
             model: model,
             callback: () {
-              mpsflog("${model.toJson}");
+              ApiService.fetchNewsItemsInfo("${model.id}").then((value) {
+                mpsflog("${value.data}");
+                MpsfNavigatorUtils.pushPage(
+                    context: context,
+                    targetPage: MpsfBlogDetailScreen(
+                      initialUrl: "about:blank",
+                      htmlString: value.data,
+                    ));
+              });
             },
           );
         },
