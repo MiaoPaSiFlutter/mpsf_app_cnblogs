@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mpsf_app/common/manager/mpsf_navigator_utils.dart';
-import 'package:mpsf_app/common/widgets/blank/mpsf_empty_widget.dart';
+import 'package:mpsf_app/common/mixin/mpsf_blank_mixin/mpsf_container_mixin.dart';
 import 'package:mpsf_app/common/widgets/cell/mpsf_cell.dart';
 import 'package:mpsf_app/screens/login/mpsf_login_screen.dart';
 import 'package:group_list_view/group_list_view.dart';
 import 'package:mpsf_package_common/mpsf_package_common.dart';
+
+import 'mpsf_setting_vm.dart';
 
 class MpsfSettingScreen extends StatefulWidget {
   MpsfSettingScreen({Key key}) : super(key: key);
@@ -15,36 +17,9 @@ class MpsfSettingScreen extends StatefulWidget {
 }
 
 class _MpsfSettingScreenState extends State<MpsfSettingScreen>
-    with WidgetsBindingObserver, MpsfPageMixin {
-  List _sections = [
-    [
-      {"title": "账号管理", "subtitle": ""},
-      {"title": "账号与安全", "subtitle": ""}
-    ],
-    [
-      {"title": "青少年模式", "subtitle": ""},
-    ],
-    [
-      {"title": "会员专属设置", "subtitle": ""},
-    ],
-    [
-      {"title": "推送通知设置", "subtitle": ""},
-      {"title": "屏蔽设置", "subtitle": ""},
-      {"title": "隐私设置", "subtitle": ""},
-      {"title": "通用设置", "subtitle": ""},
-    ],
-    [
-      {"title": "客服中心", "subtitle": ""},
-      {"title": "关于博客园", "subtitle": ""},
-    ],
-    [
-      {"title": "清除缓存", "subtitle": ""},
-      {"title": "护眼模式", "subtitle": ""},
-    ],
-    [
-      {"title": "退出", "subtitle": ""},
-    ],
-  ];
+    with WidgetsBindingObserver, MpsfPageMixin, MpsfContainerMixin {
+  MpsfSettingVM pageVM = MpsfSettingVM();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,34 +27,22 @@ class _MpsfSettingScreenState extends State<MpsfSettingScreen>
         title: Text('设置'),
         leading: getBackItem(),
       ),
-      body: Container(
-        decoration: BoxDecoration(border: Border.all(color: Colors.red)),
-        child: MpsfBodyContainer(
-          blankStatus: blankStatus,
-          blankIconPath: blankIconPath,
-          blankTitle: blankTitle,
-          blankDescription: blankDescription,
-          onTapBlank: () {
-            onFetchData();
-          },
-          bodyWidget: _buildBodyWidget(),
-        ),
-      ),
+      body: buildMpsfContainer(),
     );
   }
 
   ///////////////////////////////////////////
   /// BodyWidget
   ///////////////////////////////////////////
-  Widget _buildBodyWidget() {
+  Widget buildBodyWidget() {
     return Container(
       height: double.infinity,
       color: Theme.of(context).dividerColor,
       child: GroupListView(
         padding: EdgeInsets.all(0),
-        sectionsCount: _sections.length,
+        sectionsCount: pageVM.sections.length,
         countOfItemInSection: (int section) {
-          return _sections[section].length;
+          return pageVM.sections[section].length;
         },
         itemBuilder: _itemBuilder,
         groupHeaderBuilder: (BuildContext context, int section) {
@@ -94,7 +57,7 @@ class _MpsfSettingScreenState extends State<MpsfSettingScreen>
   }
 
   Widget _itemBuilder(BuildContext context, IndexPath index) {
-    Map cellData = _sections[index.section][index.index];
+    Map cellData = pageVM.sections[index.section][index.index];
     if (cellData["title"] == "退出") {
       return Material(
         child: InkWell(

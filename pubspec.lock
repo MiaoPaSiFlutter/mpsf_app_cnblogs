@@ -285,11 +285,9 @@ packages:
   mpsf_package_common:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: fba09d0c0058345d20bb73c513441077757b9444
-      url: "git://github.com/MiaoPaSiFlutter/mpsf_package_common.git"
-    source: git
+      path: "../mpsf_package_common"
+      relative: true
+    source: path
     version: "0.0.1"
   nested:
     dependency: transitive

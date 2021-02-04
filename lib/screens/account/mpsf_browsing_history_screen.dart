@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:mpsf_app/common/manager/mpsf_navigator_utils.dart';
+import 'package:mpsf_app/common/mixin/mpsf_blank_mixin/mpsf_container_info.dart';
+import 'package:mpsf_app/common/mixin/mpsf_blank_mixin/mpsf_container_mixin.dart';
 import 'package:mpsf_app/common/net/network.dart';
-import 'package:mpsf_app/common/widgets/blank/mpsf_empty_widget.dart';
 import 'package:mpsf_app/screens/blogdetail/mpsf_blog_detail_screen.dart';
 import 'package:mpsf_app/screens/home/model/home_list_model.dart';
 import 'package:mpsf_app/screens/home/widget/home_cell.dart';
 import 'package:mpsf_package_common/mpsf_package_common.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:toast/toast.dart';
+
+import 'mpsf_browsing_history_vm.dart';
 
 class MpsfBrowsingHistoryScreen extends StatefulWidget {
   MpsfBrowsingHistoryScreen({Key key}) : super(key: key);
@@ -18,9 +21,8 @@ class MpsfBrowsingHistoryScreen extends StatefulWidget {
 }
 
 class _MpsfBrowsingHistoryScreenState extends State<MpsfBrowsingHistoryScreen>
-    with MpsfPageMixin {
-  List _items = [];
-  int _page = 1;
+    with MpsfPageMixin, MpsfContainerMixin {
+  MpsfBrowsingHistoryVM pageVM = MpsfBrowsingHistoryVM();
 
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -28,22 +30,9 @@ class _MpsfBrowsingHistoryScreenState extends State<MpsfBrowsingHistoryScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('本地浏览历史'),
-        leading: getBackItem(),
-      ),
+      appBar: AppBar(title: Text('本地浏览历史'), leading: getBackItem()),
       body: Container(
-        decoration: BoxDecoration(border: Border.all(color: Colors.red)),
-        child: MpsfBodyContainer(
-          blankStatus: blankStatus,
-          blankIconPath: blankIconPath,
-          blankTitle: blankTitle,
-          blankDescription: blankDescription,
-          onTapBlank: () {
-            onFetchData();
-          },
-          bodyWidget: _buildBodyWidget(),
-        ),
+        child: buildMpsfContainer(),
       ),
     );
   }
@@ -51,7 +40,7 @@ class _MpsfBrowsingHistoryScreenState extends State<MpsfBrowsingHistoryScreen>
   ///////////////////////////////////////////
   /// BodyWidget
   ///////////////////////////////////////////
-  Widget _buildBodyWidget() {
+  Widget buildBodyWidget() {
     return SmartRefresher(
       enablePullDown: true,
       enablePullUp: true,
@@ -60,9 +49,9 @@ class _MpsfBrowsingHistoryScreenState extends State<MpsfBrowsingHistoryScreen>
       onLoading: _onLoading,
       child: ListView.separated(
         padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-        itemCount: _items.length,
+        itemCount: pageVM.items.length,
         itemBuilder: (context, index) {
-          HomeListModel model = _items[index];
+          HomeListModel model = pageVM.items[index];
           return HomeCell(
             model: model,
             callback: () {
@@ -83,43 +72,39 @@ class _MpsfBrowsingHistoryScreenState extends State<MpsfBrowsingHistoryScreen>
   /// 请求
   ///////////////////////////////////////////
   void _onRefresh() async {
-    _page = 1;
+    pageVM.page = 1;
     await loadData();
   }
 
   void _onLoading() async {
-    _page++;
+    pageVM.page++;
     await loadData();
   }
 
   Future<void> loadData() async {
-    setState(() {
-      blankStatus = MpsfBlankStatus.loading;
-    });
-    ApiService.fetchApi(ApiType.Home_blogposts, page: _page, pageSize: 30)
+    setContainerStatus(MCIStatus.loading);
+    ApiService.fetchApi(ApiType.Home_blogposts, page: pageVM.page, pageSize: 30)
         .then((respM) {
       _refreshController.refreshCompleted();
 
-      if (_page == 1) {
-        _items.clear();
+      if (pageVM.page == 1) {
+        pageVM.items.clear();
       }
       if (respM.data != null && respM.data is List) {
         for (var map in respM.data) {
           HomeListModel model = HomeListModel.fromJson(map);
-          _items.add(model);
+          pageVM.items.add(model);
         }
       }
 
-      setState(() {
-        if (respM.success) {
-          blankStatus = MpsfBlankStatus.ready;
-        } else {
-          blankStatus = MpsfBlankStatus.error;
-        }
-        if (respM.error != null && respM.error.message != null) {
-          Toast.show(respM.error.message, context);
-        }
-      });
+      if (respM.success) {
+        setContainerStatus(MCIStatus.ready);
+      } else {
+        setContainerStatus(MCIStatus.error);
+      }
+      if (respM.error != null && respM.error.message != null) {
+        Toast.show(respM.error.message, context, gravity: Toast.TOP);
+      }
     });
   }
 
@@ -129,6 +114,11 @@ class _MpsfBrowsingHistoryScreenState extends State<MpsfBrowsingHistoryScreen>
   ///////////////////////////////////////////
   @override
   void onFetchData() {
+    _onRefresh();
+  }
+
+  @override
+  void onTapBlank() {
     _onRefresh();
   }
 }

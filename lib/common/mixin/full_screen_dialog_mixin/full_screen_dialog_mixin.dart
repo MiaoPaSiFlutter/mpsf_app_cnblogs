@@ -1,7 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:mpsf_app/common/widgets/loading/full_screen_loading_dialog.dart';
 
-abstract class BaseState<T extends StatefulWidget> extends State<T> {
+import 'package:flutter/material.dart';
+
+import 'full_screen_loading_dialog.dart';
+
+@optionalTypeArgs
+mixin FullScreenDialogMixin<T extends StatefulWidget> on State<T> {
   ///在页面上方显示一个 loading widget
   ///共有两种方法，showProgressDialog是其中一种
   ///具体参见 : progress_widget.dart

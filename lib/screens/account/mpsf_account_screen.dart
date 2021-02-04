@@ -1,10 +1,10 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:group_list_view/group_list_view.dart';
 import 'package:mpsf_app/common/manager/mpsf_navigator_utils.dart';
+import 'package:mpsf_app/common/mixin/mpsf_blank_mixin/mpsf_container_info.dart';
+import 'package:mpsf_app/common/mixin/mpsf_blank_mixin/mpsf_container_mixin.dart';
 import 'package:mpsf_app/common/net/network.dart';
-import 'package:mpsf_app/common/widgets/blank/mpsf_empty_widget.dart';
 import 'package:mpsf_app/common/widgets/cell/mpsf_cell.dart';
 import 'package:mpsf_app/screens/account/mpsf_my_blogs_screen.dart';
 import 'package:mpsf_app/screens/account/mpsf_my_collect_screen.dart';
@@ -14,6 +14,7 @@ import 'package:mpsf_package_common/mpsf_package_common.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:toast/toast.dart';
 
+import 'mpsf_account_vm.dart';
 import 'mpsf_browsing_history_screen.dart';
 import 'mpsf_setting_screen.dart';
 
@@ -28,26 +29,9 @@ class _MpsfAccountScreenState extends State<MpsfAccountScreen>
     with
         AutomaticKeepAliveClientMixin,
         WidgetsBindingObserver,
-        MpsfPageMixin {
-  List _sections = [
-    [
-      {"title": "用户信息", "subtitle": ""},
-    ],
-    [
-      {"title": "我的博客", "subtitle": ""},
-      {"title": "我的收藏", "subtitle": ""},
-      {"title": "浏览历史", "subtitle": ""},
-    ],
-    [
-      {"title": "提交反馈", "subtitle": ""},
-    ],
-    [
-      {"title": "更新内容", "subtitle": ""},
-      {"title": "许可", "subtitle": ""},
-      {"title": "关于", "subtitle": ""},
-    ],
-  ];
-  LoginUserBean _loginUser;
+        MpsfPageMixin,
+        MpsfContainerMixin {
+  MpsfAccountVM pageVM = MpsfAccountVM();
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
@@ -57,25 +41,12 @@ class _MpsfAccountScreenState extends State<MpsfAccountScreen>
     return Scaffold(
       appBar: AppBar(title: Text("我的"), actions: _getAppBarActions()),
       body: Container(
-        decoration: BoxDecoration(border: Border.all(color: Colors.red)),
-        child: MpsfBodyContainer(
-          blankStatus: blankStatus,
-          blankIconPath: blankIconPath,
-          blankTitle: blankTitle,
-          blankDescription: blankDescription,
-          onTapBlank: () {
-            onFetchData();
-          },
-          bodyWidget: _buildBodyWidget(),
-        ),
+        child: buildMpsfContainer(),
       ),
     );
   }
 
-  ///////////////////////////////////////////
-  /// BodyWidget
-  ///////////////////////////////////////////
-  Widget _buildBodyWidget() {
+  Widget buildBodyWidget() {
     return SmartRefresher(
       enablePullDown: true,
       enablePullUp: true,
@@ -86,9 +57,9 @@ class _MpsfAccountScreenState extends State<MpsfAccountScreen>
         color: Theme.of(context).dividerColor,
         child: GroupListView(
           padding: EdgeInsets.all(0),
-          sectionsCount: _sections.length,
+          sectionsCount: pageVM.sections.length,
           countOfItemInSection: (int section) {
-            return _sections[section].length;
+            return pageVM.sections[section].length;
           },
           itemBuilder: _itemBuilder,
           groupHeaderBuilder: (BuildContext context, int section) {
@@ -104,9 +75,9 @@ class _MpsfAccountScreenState extends State<MpsfAccountScreen>
   }
 
   Widget _itemBuilder(BuildContext context, IndexPath index) {
-    Map cellData = _sections[index.section][index.index];
+    Map cellData = pageVM.sections[index.section][index.index];
     if (cellData["title"] == "用户信息") {
-      return UserInfoItem(user: _loginUser);
+      return UserInfoItem(user: pageVM.loginUser);
     } else {
       String title = cellData["title"] ?? "";
       return Material(
@@ -119,7 +90,7 @@ class _MpsfAccountScreenState extends State<MpsfAccountScreen>
               MpsfNavigatorUtils.pushPage(
                   context: context,
                   targetPage: MpsfMyBlogsScreen(
-                    blogApp: _loginUser?.blogApp,
+                    blogApp: pageVM.loginUser?.blogApp,
                   ));
             } else if (title == "我的收藏") {
               MpsfNavigatorUtils.pushPage(
@@ -169,18 +140,15 @@ class _MpsfAccountScreenState extends State<MpsfAccountScreen>
   }
 
   Future<void> loadData() async {
-    setState(() {
-      blankStatus = MpsfBlankStatus.loading;
-    });
+    setContainerStatus(MCIStatus.loading);
     ApiService.fetchUserInfo().then((value) {
       if (value.success) {
-        _loginUser = LoginUserBean.fromJson(value.data);
+        pageVM.loginUser = LoginUserBean.fromJson(value.data);
         Toast.show("获取个人信息成功", context);
       } else {
         Toast.show("获取个人信息失败", context);
       }
-      blankStatus = MpsfBlankStatus.ready;
-      setState(() {});
+      setContainerStatus(MCIStatus.ready);
     });
   }
 
@@ -190,6 +158,11 @@ class _MpsfAccountScreenState extends State<MpsfAccountScreen>
   ///////////////////////////////////////////
   @override
   void onFetchData() {
+    loadData();
+  }
+
+  @override
+  void onTapBlank() {
     loadData();
   }
 
@@ -212,9 +185,7 @@ class UserInfoItem extends StatelessWidget {
         if (this.user == null) {
           MpsfNavigatorUtils.pushPage(
               context: context, targetPage: MpsfLoginAuthorizeScreen());
-        } else {
-          
-        }
+        } else {}
       },
       child: this.user == null ? _buildWithNoLogin() : _buildWithAlreadyLogin(),
     );

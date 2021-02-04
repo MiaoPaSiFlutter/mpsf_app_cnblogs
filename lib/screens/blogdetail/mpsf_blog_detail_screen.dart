@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:mpsf_app/common/widgets/blank/mpsf_empty_widget.dart';
+import 'package:mpsf_app/common/mixin/mpsf_blank_mixin/mpsf_container_info.dart';
+import 'package:mpsf_app/common/mixin/mpsf_blank_mixin/mpsf_container_mixin.dart';
 import 'package:mpsf_package_common/mpsf_package_common.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -13,7 +14,7 @@ class MpsfBlogDetailScreen extends StatefulWidget {
 }
 
 class _MpsfBlogDetailScreenState extends State<MpsfBlogDetailScreen>
-    with WidgetsBindingObserver, MpsfPageMixin {
+    with WidgetsBindingObserver, MpsfPageMixin, MpsfContainerMixin {
   WebViewController _webViewController;
   @override
   Widget build(BuildContext context) {
@@ -22,26 +23,14 @@ class _MpsfBlogDetailScreenState extends State<MpsfBlogDetailScreen>
         title: Text('详情'),
         leading: getBackItem(),
       ),
-      body: Container(
-        decoration: BoxDecoration(border: Border.all(color: Colors.red)),
-        child: MpsfBodyContainer(
-          blankStatus: blankStatus,
-          blankIconPath: blankIconPath,
-          blankTitle: blankTitle,
-          blankDescription: blankDescription,
-          onTapBlank: () {
-            _webViewController.reload();
-          },
-          bodyWidget: _buildBodyWidget(),
-        ),
-      ),
+      body: buildMpsfContainer(),
     );
   }
 
   ///////////////////////////////////////////
   /// Widget
   ///////////////////////////////////////////
-  Widget _buildBodyWidget() {
+  Widget buildBodyWidget() {
     return Container(
       width: double.infinity,
       height: double.infinity,
@@ -53,17 +42,14 @@ class _MpsfBlogDetailScreenState extends State<MpsfBlogDetailScreen>
         },
         onPageStarted: (String url) {
           print('Page started loading: $url');
-          blankStatus = MpsfBlankStatus.loading;
-          setState(() {});
+          setContainerStatus(MCIStatus.loading);
         },
         onPageFinished: (String url) {
           print('Page finished loading: $url');
-          blankStatus = MpsfBlankStatus.ready;
-          setState(() {});
+          setContainerStatus(MCIStatus.ready);
         },
         onWebResourceError: (error) {
-          blankStatus = MpsfBlankStatus.error;
-          setState(() {});
+          setContainerStatus(MCIStatus.error);
         },
         gestureNavigationEnabled: true,
       ),
@@ -77,6 +63,12 @@ class _MpsfBlogDetailScreenState extends State<MpsfBlogDetailScreen>
   @override
   void onFetchData() {
     // TODO: implement onFetchData
+  }
+
+  @override
+  void onTapBlank() {
+    // TODO: implement onTapBlank
+    super.onTapBlank();
   }
 
   @override

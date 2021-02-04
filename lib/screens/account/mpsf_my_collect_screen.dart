@@ -1,15 +1,16 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:mpsf_app/common/mixin/mpsf_blank_mixin/mpsf_container_info.dart';
+import 'package:mpsf_app/common/mixin/mpsf_blank_mixin/mpsf_container_mixin.dart';
 import 'package:mpsf_app/common/net/network.dart';
-import 'package:mpsf_app/common/widgets/blank/mpsf_empty_widget.dart';
-import 'package:mpsf_app/screens/blogdetail/mpsf_blog_detail_screen.dart';
-import 'package:mpsf_app/screens/home/model/home_list_model.dart';
-import 'package:mpsf_app/screens/home/widget/home_cell.dart';
+
 import 'package:mpsf_app/utils/relative_date_format.dart';
 import 'package:mpsf_package_common/mpsf_package_common.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:toast/toast.dart';
+
+import 'mpsf_my_collect_vm.dart';
 
 class MpsfMyCollectScreen extends StatefulWidget {
   MpsfMyCollectScreen({Key key}) : super(key: key);
@@ -19,10 +20,8 @@ class MpsfMyCollectScreen extends StatefulWidget {
 }
 
 class _MpsfMyCollectScreenState extends State<MpsfMyCollectScreen>
-    with MpsfPageMixin {
-  List _items = [];
-  int _page = 1;
-  int _pageSize = 30;
+    with MpsfPageMixin, MpsfContainerMixin {
+  MpsfMyCollectVM pageVM = MpsfMyCollectVM();
 
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -30,30 +29,15 @@ class _MpsfMyCollectScreenState extends State<MpsfMyCollectScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('我的收藏'),
-        leading: getBackItem(),
-      ),
-      body: Container(
-        decoration: BoxDecoration(border: Border.all(color: Colors.red)),
-        child: MpsfBodyContainer(
-          blankStatus: blankStatus,
-          blankIconPath: blankIconPath,
-          blankTitle: blankTitle,
-          blankDescription: blankDescription,
-          onTapBlank: () {
-            onFetchData();
-          },
-          bodyWidget: _buildBodyWidget(),
-        ),
-      ),
+      appBar: AppBar(title: Text('我的收藏'), leading: getBackItem()),
+      body: buildMpsfContainer(),
     );
   }
 
   ///////////////////////////////////////////
   /// 请求
   ///////////////////////////////////////////
-  Widget _buildBodyWidget() {
+  Widget buildBodyWidget() {
     return SmartRefresher(
       enablePullDown: true,
       enablePullUp: true,
@@ -62,9 +46,9 @@ class _MpsfMyCollectScreenState extends State<MpsfMyCollectScreen>
       onLoading: _onLoading,
       child: ListView.separated(
         padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-        itemCount: _items.length,
+        itemCount: pageVM.items.length,
         itemBuilder: (context, index) {
-          Map model = _items[index];
+          Map model = pageVM.items[index];
           return CellItem(
             data: model,
             callback: () {},
@@ -81,48 +65,46 @@ class _MpsfMyCollectScreenState extends State<MpsfMyCollectScreen>
   /// 请求
   ///////////////////////////////////////////
   void _onRefresh() async {
-    _page = 1;
+    pageVM.page = 1;
     await loadData();
   }
 
   void _onLoading() async {
-    _page++;
+    pageVM.page++;
     await loadData();
   }
 
   Future<void> loadData() async {
-    setState(() {
-      blankStatus = MpsfBlankStatus.loading;
-    });
-    ApiService.fetchBookmarks(page: _page, pageSize: _pageSize).then((respM) {
+    setContainerStatus(MCIStatus.loading);
+
+    ApiService.fetchBookmarks(page: pageVM.page, pageSize: pageVM.pageSize)
+        .then((respM) {
       _refreshController.refreshCompleted();
       _refreshController.loadComplete();
 
-      if (_page == 1) {
-        _items.clear();
+      if (pageVM.page == 1) {
+        pageVM.items.clear();
       }
 
       if (respM.success && respM.data != null && respM.data is List) {
         List list = respM.data;
-        _items.addAll(list);
+        pageVM.items.addAll(list);
 
-        if (list.length < _pageSize) {
+        if (list.length < pageVM.pageSize) {
           _refreshController.loadNoData();
         }
       } else {
-        _page = max(_page--, 1);
+        pageVM.page = max(pageVM.page--, 1);
       }
 
-      setState(() {
-        if (respM.success) {
-          blankStatus = MpsfBlankStatus.ready;
-        } else {
-          blankStatus = MpsfBlankStatus.error;
-        }
-        if (respM.error != null && respM.error.message != null) {
-          Toast.show(respM.error.message, context);
-        }
-      });
+      if (respM.success) {
+        setContainerStatus(MCIStatus.ready);
+      } else {
+        setContainerStatus(MCIStatus.error);
+      }
+      if (respM.error != null && respM.error.message != null) {
+        Toast.show(respM.error.message, context, gravity: Toast.TOP);
+      }
     });
   }
 
@@ -132,6 +114,11 @@ class _MpsfMyCollectScreenState extends State<MpsfMyCollectScreen>
   ///////////////////////////////////////////
   @override
   void onFetchData() {
+    _onRefresh();
+  }
+
+  @override
+  void onTapBlank() {
     _onRefresh();
   }
 }

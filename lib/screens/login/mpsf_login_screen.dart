@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:mpsf_app/common/config/config.dart';
 import 'package:mpsf_app/common/local/local_storage.dart';
 import 'package:mpsf_app/common/manager/app_manager.dart';
+import 'package:mpsf_app/common/mixin/mpsf_blank_mixin/mpsf_container_mixin.dart';
 import 'package:mpsf_app/common/net/network.dart';
-import 'package:mpsf_app/common/widgets/blank/mpsf_empty_widget.dart';
 import 'package:mpsf_package_common/mpsf_package_common.dart';
 import 'package:toast/toast.dart';
 // import 'mpsflogin_authorize_screen.dart';
@@ -29,7 +29,7 @@ class MpsfLoginScreen extends StatefulWidget {
 }
 
 class _MpsfLoginScreenState extends State<MpsfLoginScreen>
-    with WidgetsBindingObserver, MpsfPageMixin {
+    with WidgetsBindingObserver, MpsfPageMixin, MpsfContainerMixin {
   ///用来控制  TextField 焦点的获取与关闭
   FocusNode _focusNode = FocusNode();
   TextEditingController _controller = TextEditingController();
@@ -44,26 +44,14 @@ class _MpsfLoginScreenState extends State<MpsfLoginScreen>
         title: Text('登录'),
         leading: getBackItem(),
       ),
-      body: Container(
-        decoration: BoxDecoration(border: Border.all(color: Colors.red)),
-        child: MpsfBodyContainer(
-          blankStatus: blankStatus,
-          blankIconPath: blankIconPath,
-          blankTitle: blankTitle,
-          blankDescription: blankDescription,
-          onTapBlank: () {
-            onFetchData();
-          },
-          bodyWidget: _buildBodyWidget(),
-        ),
-      ),
+      body: buildMpsfContainer(),
     );
   }
 
   ///////////////////////////////////////////
   /// Widget
   ///////////////////////////////////////////
-  Widget _buildBodyWidget() {
+  Widget buildBodyWidget() {
     return Container(
         margin: EdgeInsets.all(12),
         height: double.infinity,

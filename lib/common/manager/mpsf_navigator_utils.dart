@@ -25,9 +25,9 @@ class MpsfNavigatorUtils {
         return targetPage;
       });
     } else {
-      pageRoute = CupertinoPageRoute(builder: (BuildContext context) {
-        return targetPage;
-      });
+      // pageRoute = CupertinoPageRoute(builder: (BuildContext context) {
+      //   return targetPage;
+      // });
       // pageRoute = FadeRouteBuilder(targetPage, null);
       // pageRoute = NoAnimRouteBuilder(targetPage, null);
       // pageRoute = ScaleRouteBuilder(targetPage, null);
@@ -35,6 +35,7 @@ class MpsfNavigatorUtils {
       // pageRoute = SlideBottomRouteBuilder(targetPage, null);
       pageRoute = SlideRightRouteBuilder(targetPage, null);
     }
+    pageRoute = SlideRightRouteBuilder(targetPage, null);
 
     if (isReplace) {
       Navigator.of(context).pushReplacement(pageRoute).then((value) {

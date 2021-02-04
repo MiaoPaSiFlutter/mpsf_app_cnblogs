@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mpsf_app/common/mixin/mpsf_blank_mixin/mpsf_container_mixin.dart';
 import 'package:mpsf_package_common/mpsf_package_common.dart';
-
-
 
 class MpsfShopcarScreen extends StatefulWidget {
   MpsfShopcarScreen({Key key}) : super(key: key);
@@ -14,8 +13,8 @@ class _MpsfShopcarScreenState extends State<MpsfShopcarScreen>
     with
         AutomaticKeepAliveClientMixin,
         WidgetsBindingObserver,
-        MpsfPageMixin {
-
+        MpsfPageMixin,
+        MpsfContainerMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -23,11 +22,7 @@ class _MpsfShopcarScreenState extends State<MpsfShopcarScreen>
       appBar: AppBar(
         title: Text('购物车'),
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.red)
-        ),
-      ),
+      body: buildMpsfContainer(),
     );
   }
 
@@ -38,6 +33,12 @@ class _MpsfShopcarScreenState extends State<MpsfShopcarScreen>
   @override
   void onFetchData() {
     // TODO: implement onFetchData
+  }
+
+  @override
+  void onTapBlank() {
+    // TODO: implement onTapBlank
+    super.onTapBlank();
   }
 
   @override
