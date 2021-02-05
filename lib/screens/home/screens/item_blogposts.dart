@@ -60,6 +60,7 @@ class _ItemBlogPostsState extends State<ItemBlogPosts>
           return HomeCell(
             model: model,
             callback: () {
+              
               MpsfNavigatorUtils.pushPage(
                   context: context,
                   targetPage: MpsfBlogDetailScreen(initialUrl: model.url));

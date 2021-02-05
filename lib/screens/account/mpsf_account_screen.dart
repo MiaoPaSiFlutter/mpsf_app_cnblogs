@@ -5,8 +5,9 @@ import 'package:mpsf_app/common/manager/mpsf_navigator_utils.dart';
 import 'package:mpsf_app/common/mixin/mpsf_blank_mixin/mpsf_container_info.dart';
 import 'package:mpsf_app/common/mixin/mpsf_blank_mixin/mpsf_container_mixin.dart';
 import 'package:mpsf_app/common/net/network.dart';
+import 'package:mpsf_app/common/routers/navigator_util.dart';
+import 'package:mpsf_app/common/routers/routes.dart';
 import 'package:mpsf_app/common/widgets/cell/mpsf_cell.dart';
-import 'package:mpsf_app/screens/account/mpsf_my_blogs_screen.dart';
 import 'package:mpsf_app/screens/account/mpsf_my_collect_screen.dart';
 import 'package:mpsf_app/screens/login/bean/login_user_bean.dart';
 import 'package:mpsf_app/screens/login/mpsf_login_authorize_screen.dart';
@@ -87,17 +88,11 @@ class _MpsfAccountScreenState extends State<MpsfAccountScreen>
           ),
           onTap: () {
             if (title == "我的博客") {
-              MpsfNavigatorUtils.pushPage(
-                  context: context,
-                  targetPage: MpsfMyBlogsScreen(
-                    blogApp: pageVM.loginUser?.blogApp,
-                  ));
+              NavigatorUtil.pushMyBlogs(context, pageVM.loginUser?.blogApp);
             } else if (title == "我的收藏") {
-              MpsfNavigatorUtils.pushPage(
-                  context: context, targetPage: MpsfMyCollectScreen());
+              NavigatorUtil.pushScreen(context, Routes.myCollect);
             } else if (title == "浏览历史") {
-              MpsfNavigatorUtils.pushPage(
-                  context: context, targetPage: MpsfBrowsingHistoryScreen());
+              NavigatorUtil.pushScreen(context, Routes.browsingHistory);
             }
           },
         ),
@@ -122,13 +117,7 @@ class _MpsfAccountScreenState extends State<MpsfAccountScreen>
   }
 
   void clickSettingItem() {
-    MpsfNavigatorUtils.pushPage(
-        context: context, targetPage: MpsfSettingScreen());
-  }
-
-  void enterWebToLogin() {
-    MpsfNavigatorUtils.pushPage(
-        context: context, targetPage: MpsfLoginAuthorizeScreen());
+    NavigatorUtil.pushScreen(context, Routes.setting);
   }
 
   ///////////////////////////////////////////
@@ -183,8 +172,7 @@ class UserInfoItem extends StatelessWidget {
     return InkWell(
       onTap: () {
         if (this.user == null) {
-          MpsfNavigatorUtils.pushPage(
-              context: context, targetPage: MpsfLoginAuthorizeScreen());
+          NavigatorUtil.pushLogin(context);
         } else {}
       },
       child: this.user == null ? _buildWithNoLogin() : _buildWithAlreadyLogin(),

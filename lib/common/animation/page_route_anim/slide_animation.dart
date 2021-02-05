@@ -25,18 +25,19 @@ class SlideBottomRouteBuilder extends PageRouteBuilder {
   final RouteSettings routeSettings;
   SlideBottomRouteBuilder(this.page, this.routeSettings)
       : super(
-            settings: routeSettings,
-            pageBuilder: (ctx, animation, secondaryAnimation) => page,
-            transitionDuration: Duration(milliseconds: 800),
-            transitionsBuilder: (ctx, animation, secondaryAnimation, child) =>
-                SlideTransition(
-                  position: Tween<Offset>(
-                    begin: Offset(0.0, 1.0),
-                    end: Offset(0.0, 0.0),
-                  ).animate(CurvedAnimation(
-                      parent: animation, curve: Curves.fastOutSlowIn)),
-                  child: child,
-                ));
+          settings: routeSettings,
+          pageBuilder: (ctx, animation, secondaryAnimation) => page,
+          transitionDuration: Duration(milliseconds: 800),
+          transitionsBuilder: (ctx, animation, secondaryAnimation, child) =>
+              SlideTransition(
+            position: Tween<Offset>(
+              begin: Offset(0.0, 1.0),
+              end: Offset(0.0, 0.0),
+            ).animate(CurvedAnimation(
+                parent: animation, curve: Curves.fastOutSlowIn)),
+            child: child,
+          ),
+        );
 }
 
 ///右滑进入，同时如果需要左侧滑动退出的，请使用此动画

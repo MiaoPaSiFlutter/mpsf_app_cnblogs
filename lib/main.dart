@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mpsf_app/common/manager/app_manager.dart';
@@ -8,6 +9,8 @@ import 'package:provider/provider.dart';
 import 'common/config/config.dart';
 import 'common/local/local_storage.dart';
 import 'common/provider/AppLoginStatusModel.dart';
+import 'common/routers/application.dart';
+import 'common/routers/routes.dart';
 import 'screens/jd_tabbar_controller_screen.dart';
 import 'screens/jd_window_screen.dart';
 
@@ -27,6 +30,11 @@ Future runAppBefore() async {
   } else {
     AppManager().isLogin = false;
   }
+
+  /// 路由设置
+  final router = FluroRouter();
+  Routes.configureRoutes(router);
+  Application.router = router;
 }
 
 void runAppAfter() {
@@ -56,10 +64,13 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           /// 主题主色，决定导航栏颜色
           primaryColor: Colors.white,
+
           /// 背景颜色
           scaffoldBackgroundColor: Colors.white,
+
           /// 分割线颜色
           dividerColor: MpsfHexColor("#EEEEEE"),
+
           /// 字体主题，包括标题、body等文字样式
           textTheme: TextTheme(
             headline1: TextStyle(
@@ -69,7 +80,11 @@ class MyApp extends StatelessWidget {
             ),
           ),
         ),
-        home: JdWindowScreen(),
+
+        /// 生成路由
+        onGenerateRoute: Application.router.generator,
+
+        // home: JdWindowScreen(),
       ),
     );
   }

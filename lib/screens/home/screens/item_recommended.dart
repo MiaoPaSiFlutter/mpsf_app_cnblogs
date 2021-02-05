@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:mpsf_app/common/mixin/mpsf_blank_mixin/mpsf_container_info.dart';
 import 'package:mpsf_app/common/mixin/mpsf_blank_mixin/mpsf_container_mixin.dart';
 import 'package:mpsf_app/common/net/network.dart';
+import 'package:mpsf_app/common/routers/navigator_util.dart';
 import 'package:mpsf_app/screens/home/model/home_news_list_model.dart';
 import 'package:mpsf_app/screens/home/widget/home_news_cell.dart';
 import 'package:mpsf_package_common/mpsf_package_common.dart';
@@ -59,7 +60,10 @@ class _ItemRecommendedState extends State<ItemRecommended>
           return HomeNewsCell(
             model: model,
             callback: () {
-              mpsflog("${model.toJson}");
+              ApiService.fetchNewsItemsInfo("${model.id}").then((value) {
+                mpsflog("${value.data}");
+                NavigatorUtil.pushNewsitems(context, htmlString: value.data);
+              });
             },
           );
         },
