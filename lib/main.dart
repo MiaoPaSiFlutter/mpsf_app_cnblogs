@@ -11,8 +11,6 @@ import 'common/local/local_storage.dart';
 import 'common/provider/AppLoginStatusModel.dart';
 import 'common/routers/application.dart';
 import 'common/routers/routes.dart';
-import 'screens/jd_tabbar_controller_screen.dart';
-import 'screens/jd_window_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -273,6 +273,8 @@ class _HomeNewsCellState extends State<HomeNewsCell> {
           children: [
             Expanded(
               child: RichText(
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
                 text: TextSpan(
                   text: '',
                   style: TextStyle(fontSize: 14, color: Colors.black),
@@ -386,7 +388,7 @@ class _HomeNewsCellState extends State<HomeNewsCell> {
     );
   }
 
-  void _showAddNewCommonentDialog (){
+  void _showAddNewCommonentDialog() {
     Toast.show("去评论", context);
   }
 }
